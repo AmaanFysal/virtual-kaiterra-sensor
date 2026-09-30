@@ -4,7 +4,7 @@
 
 ## Status
 
-M0–M4 merged to main (PR #1). M5, M6 and M7 approved; on branch `v1-generator-and-tools`, PR into main (2026-09-30). 211 tests pass; typecheck clean. M9 on hold (see Blockers).
+M0–M4 merged to main (PR #1). M0–M7 merged to main (PRs #1, #2). M8 built on branch `v1-server`, PR into main (2026-09-30); default server port 8790. 228 tests pass; typecheck clean. **The repo is paused after M8**: M9 waits for the care home's plug-in API contract (see Blockers).
 
 ## Done
 
@@ -17,7 +17,8 @@ M0–M4 merged to main (PR #1). M5, M6 and M7 approved; on branch `v1-generator-
 - **M5 generator:** `@vks/true-air-gen`: single-zone model stepped exactly every 5 s, CO2 from Persily & de Jonge (2017); JSON scenarios with one-off, repeating and daily events and device settings; eleven scenarios including shower, hand gel, four poorly ventilated weeks, power cycle and module swap, out of range, and step changes.
 - **M6 CLI:** `pnpm vks scenarios`, `generate`, `convert` (readings, Kaiterra top/history/device, MQTT 1/2, BACnet, CSV; `--as-of` delivery); true-air CSV/JSONL formats in core; example device configs.
 - **M7 validation report:** `pnpm vks report` (HTML with charts, and Markdown) per scenario: accuracy table (bias, MAE, RMSE, in-spec shares, worst error / E, measured lag against τ), a section per flag and condition effect, charts of sensed, true and reference values with the envelope, flagged periods and events; Markdown summaries and statistics JSON for all eleven scenarios committed, with a drift test; HTML generated on demand and attached to CI runs. All scenarios: 100% of healthy readings in spec.
-- **ADRs:** 0001 time and cadence; 0002 bounded error and profiles; 0003 unpublished values; 0004 TVOC as both names (Accepted); 0005 workspace; 0006 sim owns the air (Proposed); 0007 BACnet view first; 0008 condition effects; 0009 generator model and scenarios.
+- **M8 server:** `@vks/server` (`node:http` around `kaiterraApi`, fixed and replay clocks, 413 limit, optional CORS, `/` index); core `createReplayDevice` (lazy stepping up to 'now'; batch `simulate` now uses it, golden hashes unchanged); `vks serve` for scenarios and true-air files. The unmodified `kaiterra-async-client` reads it correctly (`tools/kaiterra-client-check`).
+- **ADRs:** 0001 time and cadence; 0002 bounded error and profiles; 0003 unpublished values; 0004 TVOC as both names (Accepted); 0005 workspace; 0006 sim owns the air (Proposed); 0007 BACnet view first; 0008 condition effects; 0009 generator model and scenarios; 0010 HTTP server with lazy replay.
 
 ## In progress
 
@@ -25,7 +26,7 @@ Nothing.
 
 ## Next
 
-- M8 Kaiterra-compatible HTTP server (wraps `kaiterraApi`), on a new branch from main once this PR is merged.
+- Paused. M9 (care home adapter) starts when the care home's plug-in API contract exists, and follows it.
 
 ## Blockers
 
@@ -36,6 +37,8 @@ Nothing.
 
 | Date | Session | Outcome |
 |---|---|---|
+| 2026-09-30 | M8 review | Default server port 8790 (the care home's test servers use 8788); PR opened; repo paused until the care home's plug-in API contract |
+| 2026-09-30 | M8 | Kaiterra-compatible HTTP server and `vks serve`; replay device in core; checked with the real `kaiterra-async-client`; 227 tests pass |
 | 2026-09-30 | M5–M7 review | HTML reports no longer committed (Markdown and statistics JSON are; HTML is a CI artifact); M9 on hold until the care home's plug-in API contract |
 | 2026-09-30 | M5–M7 | Generator (11 scenarios, Persily & de Jonge CO2), CLI (scenarios, generate, convert), validation reports for every scenario (100% healthy in spec; lags match τ); 210 tests pass |
 | 2026-09-30 | M4 review fixes | BACnet codes verified; :15 hourly windows explained and tested; `limit` semantics fixed; 147 tests pass |

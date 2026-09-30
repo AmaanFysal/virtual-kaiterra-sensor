@@ -2,16 +2,16 @@
 
 **Purpose:** how the repo is laid out, what each package may depend on, and the tooling around it.
 
-> Status: M0–M7 built (2026-09-30). Source: the approved plan in `docs/workstreams/v1-standalone-sensor/plan.md`; conventions copied from virtual-care-home.
+> Status: M0–M8 built (2026-09-30). Source: the approved plan in `docs/workstreams/v1-standalone-sensor/plan.md`; conventions copied from virtual-care-home.
 
 ## Packages
 
 | Package | Kind | May depend on | Does |
 |---|---|---|---|
 | `@vks/core` (`packages/core`) | pure | nothing | Time and RNG, the Sensedge Mini spec table, the device model, validation helpers, output formats and the pure Kaiterra API router |
-| `@vks/cli` (`apps/cli`) | I/O | `@vks/core` | Command line: `scenarios`, `generate`, `convert`, `fixtures:fetch` (M1, M6); `report` (M7) |
+| `@vks/cli` (`apps/cli`) | I/O | `@vks/core`, `@vks/true-air-gen`, `@vks/server` | Command line: `scenarios`, `generate`, `convert`, `fixtures:fetch` (M1, M6); `report` (M7); `serve` (M8) |
 | `@vks/true-air-gen` (`packages/true-air-gen`) | pure | `@vks/core` | Synthetic true-air scenarios for standalone testing (not a room model for the sim) |
-| `@vks/server` (planned, M8–M9) | I/O | `@vks/core` | Kaiterra-compatible HTTP API; plug-in adapter host |
+| `@vks/server` (`apps/server`) | I/O | `@vks/core` | Kaiterra-compatible HTTP API on `node:http`, with fixed and replay clocks (M8); later the plug-in adapter host (M9, on hold) |
 
 Pure packages live under `packages/` and follow docs/00 rule 1 (checked by `packages/core/test/guard.test.ts`, which scans every `packages/*/src`). Apps live under `apps/` and may use the filesystem, network, environment and wall clock.
 

@@ -16,18 +16,21 @@ This file is an index. Details live in `docs/`; read the relevant doc before wor
 - `pnpm vks fixtures:fetch`: replace the provisional API fixtures with live ones (needs `KAITERRA_API_KEY` in `.env`; does nothing without it)
 - `pnpm vks scenarios` / `generate --scenario <id>` / `convert --scenario <id> --format kaiterra-top`: run the generator and the virtual device from the command line (docs/06); `pnpm -s vks …` for clean piped output
 - `pnpm vks report --all`: regenerate the validation reports in `docs/workstreams/v1-standalone-sensor/reports/`. Markdown and `.stats.json` are committed (a test fails if they are stale); HTML is gitignored and a CI artifact
+- `pnpm -s vks serve --scenario <id> --key demo`: Kaiterra-compatible API on http://127.0.0.1:8790/v1 (docs/06)
 - `pnpm vks help`: CLI usage
 
 ## Layout
 
 - `packages/core` (`@vks/core`): the pure, deterministic sensor model: time, RNG, spec table, device, validation, and the output formats (Kaiterra API router, MQTT, BACnet view, CSV); no I/O
-- `apps/cli` (`@vks/cli`): the I/O shell: `scenarios`, `generate`, `convert`, `report`, `fixtures:fetch` (files, `.env`, network)
+- `apps/cli` (`@vks/cli`): the I/O shell: `scenarios`, `generate`, `convert`, `report`, `serve`, `fixtures:fetch` (files, `.env`, network)
 - `data/devices/`: example device configs
 - `test/fixtures/kaiterra-api/`: provisional API and MQTT fixtures with provenance sidecars
 - `docs/`: numbered design docs, ADRs, research notes, workstreams
 - `packages/true-air-gen` (`@vks/true-air-gen`): synthetic true-air scenarios for standalone testing (a test tool, not the sim's air model)
 - `data/scenarios/`: the scenario files
-- Planned: `apps/server` (M8). The plug-in adapter (M9) is on hold until the care home's plug-in API contract exists (docs/09)
+- `apps/server` (`@vks/server`): the Kaiterra-compatible HTTP server (`node:http` around the pure router, fixed and replay clocks)
+- `tools/kaiterra-client-check/`: manual check with the unmodified Python client
+- The plug-in adapter (M9) is on hold until the care home's plug-in API contract exists (docs/09)
 
 ## Key facts
 

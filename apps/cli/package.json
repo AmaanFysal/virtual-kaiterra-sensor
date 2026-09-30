@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "@vks/core": "workspace:*",
-    "@vks/true-air-gen": "workspace:*"
+    "@vks/true-air-gen": "workspace:*",
+    "@vks/server": "workspace:*"
   },
   "devDependencies": {
     "tsx": "^4.23.15"

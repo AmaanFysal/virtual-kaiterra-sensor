@@ -19,7 +19,7 @@ One pure, streaming device engine (`createDevice().step()`) that every host driv
 | M5 (built) | **Synthetic true-air generator** (test tool) and scenarios including shower, hand gel, poorly ventilated weeks, power cycle | 04 | Sanity and golden tests |
 | M6 (built) | **CLI** `generate`, `convert`, `report`; true-air CSV/JSONL files | 06 | End to end on the scenarios |
 | M7 (built) | **Validation report**: Markdown and statistics committed; HTML on demand and a CI artifact | 08 | Reports in `reports/`, drift test green |
-| M8 | **Kaiterra-compatible server** | 06 | Contract tests |
+| M8 (built) | **Kaiterra-compatible server** | 06 | Contract tests |
 | M9 (on hold) | **Plug-in interface**: adapter and mock host, following the care home's plug-in API contract (part of its `v1.0-testbed` milestone); ADR-0006 revised to match | 07, ADR-0006 | Adapter passes the contract's tests on the care home clock |
 | M10 | **BACnet/IP server** (stretch) | 05 | Who-Is, ReadProperty(Multiple), COV |
 

@@ -2,13 +2,13 @@
 
 **Purpose:** what could make the virtual sensor wrong, and what we are knowingly carrying.
 
-> Status: updated 2026-09-30 (end of M7).
+> Status: updated 2026-09-30 (end of M8).
 
 ## Open risks
 
 | # | Risk | Why it matters | Resolves when |
 |---|---|---|---|
-| R1 | **The output format is unverified against a live API.** The fixtures come from Kaiterra's documentation examples and from integration code, not from real responses or a real device. | Software that works against the virtual API might not work against the real one. | A real API response (`pnpm vks fixtures:fetch` with a key) or a device sample is available. |
+| R1 | **The output format is unverified against a live API.** The fixtures come from Kaiterra's documentation examples and from integration code, not from real responses or a real device. The unmodified `kaiterra-async-client` reads the virtual server correctly (M8, `tools/kaiterra-client-check`), which shows compatibility with that client, not with the live API. | Software that works against the virtual API might not work against the real one. | A real API response (`pnpm vks fixtures:fetch` with a key) or a device sample is available. |
 | R2 | The public test device is a Sensedge **SE-100**, not a Mini. Even live fixtures from it pin the API shape, not Mini-specific `source` values or parameters. | `source` values for the Mini (`km200`, `km203`, …) come from the MQTT guide, and it is unknown whether the Mini reports `rpm1c`. | A Mini response or export sample. |
 | R3 | S1 and S2 disagree on O3, NO2 and CO. | The envelope depends on which is right. | Kaiterra clarifies; until then the `looser` profile is the default (ADR-0002). |
 | R4 | Response times other than PM are assumptions, and the PM one (10 s) is from a reseller listing we could not open. | Lag and the reference used for accuracy depend on them. | Published T90s, or a step test on a real device. |
@@ -45,7 +45,8 @@ Choices the evidence does not settle. Each is one place in `packages/core/src/fo
 | `source` in history | Included, as in `top` | The docs' history example (probably a Laser Egg) has none |
 | Error bodies and 405 | `{message}`; 405 for a wrong method | Not documented |
 | `format`, `units`, `aqi` | Accepted and ignored: no unit conversion, no AQI values in points | Documented (`aqi`) or seen in integration code; not implemented |
-| Legacy `/sensedges/{id}` | Not served | Only in old example code |
+| Legacy `/sensedges/{id}` | Not served, so Kaiterra's own old example script (`restv1-apikey.py`) will not work against the server | Only in old example code |
+| Server extras | `GET /` index, `X-Vks-As-Of` header, 1 MiB body limit (413), optional CORS | Not part of the Kaiterra API; a strict client ignores them |
 | MQTT Format 1 | TVOC as `km203.rtvocb (ppb)`, O3 as `km207.r03` (copied from the guide); `rpm1c`, `rno2 (ppb)`, `rco (ppm)` guessed | Whether `rtvocb` is the reported TVOC is not stated |
 | MQTT Format 2 | `pm1`, `no2`, `co` appended | Not in the guide |
 | BACnet | COV increments; AI 7 present as `no-sensor`; objects for missing parameters omitted | PICS lists names only |

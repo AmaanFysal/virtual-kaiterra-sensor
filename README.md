@@ -10,6 +10,7 @@ pnpm test
 pnpm vks scenarios
 pnpm vks generate --scenario door-closed-co2-rise --out out/door.csv
 pnpm -s vks convert --input out/door.csv --device data/devices/room1.json --format kaiterra-top
+pnpm -s vks serve --scenario door-closed-co2-rise --key demo   # Kaiterra-compatible API on :8790/v1
 ```
 
 ```ts
@@ -22,6 +23,6 @@ const result = simulate(
 result.readings; // [{ param: "co2", ts, span: 60, value, source?, … }]
 ```
 
-Status: the sensor model, output formats, synthetic true-air scenarios, CLI and validation reports are built (M0–M7); see the [reports](docs/workstreams/v1-standalone-sensor/reports/README.md). The Kaiterra-compatible server is next. The care home plug-in adapter waits for the care home's plug-in API contract (`docs/workstreams/v1-standalone-sensor/`).
+Status: the sensor model, output formats, synthetic true-air scenarios, CLI and validation reports are built (M0–M8); see the [reports](docs/workstreams/v1-standalone-sensor/reports/README.md). A Kaiterra-compatible HTTP server (M8) serves them to software written for the real API. The care home plug-in adapter waits for the care home's plug-in API contract (`docs/workstreams/v1-standalone-sensor/`).
 
 Design docs start at [CLAUDE.md](CLAUDE.md) and [docs/](docs/). Kaiterra's specifications and API are cited in [docs/02](docs/02-sensedge-mini-reference.md).

@@ -8,6 +8,7 @@ import { UsageError, convertCommand, generateCommand, scenariosCommand, type Cli
 import { getSetting } from "./env.js";
 import { fetchFixtures } from "./fixtures-fetch.js";
 import { reportCommand } from "./report/command.js";
+import { startServe } from "./serve.js";
 
 export const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
 
@@ -26,6 +27,10 @@ Commands:
   report           True vs sensed validation report (HTML with charts, and Markdown)
                      --scenario <id|path> [--seed S] [--device file] [--out-dir dir]
                      --all   every scenario, into docs/workstreams/v1-standalone-sensor/reports
+  serve            Kaiterra-compatible API over HTTP (same paths, ?key= auth and JSON as api.kaiterra.com/v1)
+                     --scenario <id|path> (repeatable) or --input <true-air file> [--device file]
+                     [--port 8790] [--host 127.0.0.1] [--key K (repeatable)] [--cors]
+                     [--clock fixed|replay] [--speed 60] [--start RFC3339]
   fixtures:fetch   Save live API responses from Kaiterra's public test Sensedge as fixtures
                    (needs KAITERRA_API_KEY in the environment or .env; does nothing without it)
 
@@ -44,6 +49,10 @@ export async function runCli(argv: string[], io: CliIo): Promise<number> {
         return convertCommand(io, rest);
       case "report":
         return reportCommand(io, rest);
+      case "serve":
+        // Keeps listening after this returns; stop it with Ctrl-C.
+        await startServe(io, rest);
+        return 0;
       case "fixtures:fetch": {
         const result = await fetchFixtures({
           key: getSetting("KAITERRA_API_KEY", join(io.repoRoot, ".env")),

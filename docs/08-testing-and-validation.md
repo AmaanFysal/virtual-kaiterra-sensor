@@ -2,7 +2,7 @@
 
 **Purpose:** what the tests prove, the invariants they hold, and the planned validation report.
 
-> Status: M0–M7 built (2026-09-30): 211 tests; validation report summaries in `docs/workstreams/v1-standalone-sensor/reports/`, HTML as a CI artifact.
+> Status: M0–M8 built (2026-09-30): 228 tests; validation report summaries in `docs/workstreams/v1-standalone-sensor/reports/`, HTML as a CI artifact.
 
 ## Test files
 
@@ -19,6 +19,8 @@
 | `apps/cli/test/cli.test.ts` | M6: true-air CSV/JSONL round trips and errors with line numbers; `scenarios`, `generate` (reproducible), `convert` to every format; scenario device settings, `--seed`, device-file events, `--as-of` delivery; usage errors and exit codes |
 | `packages/core/test/report.test.ts` | M7: in-spec shares, errors and missing intervals; flagged minutes merged into periods with their excess; lag near τ on a step; lag blank on flat air; device log counts |
 | `apps/cli/test/report.test.ts` | M7: HTML, Markdown and statistics written; a section per condition effect; deterministic; **committed Markdown and statistics equal a fresh `report --all`**; statistics agree with the Markdown; escaping; chart bucketing with gaps; device events as spans |
+| `apps/server/test/server.test.ts` | M8 over real HTTP: bodies identical to the pure router for device, top, history and paging; key checks; 400/404/413 errors; batch with an inherited key; the `/` index; CORS on request; duplicate ids refused; the replay clock revealing readings and ageing modules over simulated time; the request and parse flow of `kaiterra-async-client` |
+| `apps/cli/test/serve.test.ts` | M8: `vks serve` with several scenarios, `--start`, a true-air file with a device config, the replay clock, and usage errors |
 | `apps/cli/test/fixtures.test.ts` | Every fixture has a provenance sidecar and no key, and matches the documented API/MQTT shapes |
 | `apps/cli/test/fixtures-fetch.test.ts` | `fixtures:fetch` skips without a key; with one it never logs or saves it (raw or URL-encoded), even when the API echoes it back |
 
