@@ -8,6 +8,7 @@ export * from "./model/config.js";
 export * from "./model/types.js";
 export * from "./model/lag.js";
 export * from "./model/error.js";
+export * from "./model/conditions.js";
 export * from "./model/device.js";
 export * from "./model/simulate.js";
 export * from "./validation/envelope.js";

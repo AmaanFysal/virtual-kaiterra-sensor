@@ -72,4 +72,4 @@ Significant decisions get an ADR (`docs/adr/0000-template.md`). Don't start work
 
 ## Skills
 
-`pre-pr`, `new-parameter`, `new-output-format`, and `/refresh-fixtures` (manual only).
+`pre-pr`, `new-parameter`, `new-condition-effect`, `new-output-format`, and `/refresh-fixtures` (manual only).

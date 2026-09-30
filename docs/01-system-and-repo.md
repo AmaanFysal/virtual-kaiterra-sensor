@@ -2,7 +2,7 @@
 
 **Purpose:** how the repo is laid out, what each package may depend on, and the tooling around it.
 
-> Status: M0–M3a built (2026-09-30). Source: the approved plan in `docs/workstreams/v1-standalone-sensor/plan.md`; conventions copied from virtual-care-home.
+> Status: M0–M3 built (2026-09-30). Source: the approved plan in `docs/workstreams/v1-standalone-sensor/plan.md`; conventions copied from virtual-care-home.
 
 ## Packages
 
@@ -38,4 +38,4 @@ The hook, patterns file, docs checker and attribution workflow are copied from v
 
 - `.claude/settings.json`: `{"attribution": {"commit": "", "pr": ""}}`.
 - `.claude/rules/core.md`: determinism rules, loaded for `packages/**`.
-- `.claude/skills/`: `pre-pr`, `new-parameter`, `new-output-format`, `refresh-fixtures` (manual only).
+- `.claude/skills/`: `pre-pr`, `new-parameter`, `new-condition-effect`, `new-output-format`, `refresh-fixtures` (manual only).

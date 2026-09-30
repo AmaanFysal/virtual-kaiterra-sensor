@@ -2,7 +2,7 @@
 
 **Purpose:** how true air becomes a Sensedge Mini reading: sampling, lag, the bounded error model, module lifecycle, availability, and the optional condition effects.
 
-> Status: built in M2–M3a (2026-09-30); condition effects planned (M3b). Code: `packages/core/src/model/`. Decisions: ADR-0001, 0002, 0003.
+> Status: built in M2–M3 (2026-09-30). Code: `packages/core/src/model/`. Decisions: ADR-0001, 0002, 0003, 0008.
 
 ## One engine, two drivers
 
@@ -24,7 +24,7 @@ At each reporting boundary (every 60 s, `ts` = the interval's end):
 
 3. **Coverage**: at least `minCoverage` (half) of the interval's samples must exist, or the interval is skipped (`no-input` in the log).
 4. **Reference** r = mean of the lagged samples; **truth** = mean of the raw samples.
-5. **Error** (below).
+5. **Error** (below), then condition effects, warm-up and outliers if switched on.
 6. **Clamp** to the reportable range (the profile's spec range, extended to 10,000 ppm for CO2) and **quantise** to the resolution.
 7. **Availability**: dropouts, offline buffering and backfill (below).
 
@@ -61,10 +61,26 @@ Readings whose reference is outside the spec range are flagged `out-of-range`, a
 - **Network**: scheduled `network` events and random outages (`randomOfflinePerDay`, exponential lengths with mean `randomOfflineMeanMinutes`). While offline, readings go to the onboard buffer, which holds `bufferMinutes` (60, "1 hour of data", S1/S2) intervals; older intervals are lost (`buffer-overflow`). On reconnect the buffer is delivered with `deliveredAt` = reconnect time and flag `backfilled`. Online readings have `deliveredAt = ts`.
 - **Power**: while off, nothing is sampled, reported or aged (except on-board calibration age).
 
+## Condition-dependent effects (M3b, ADR-0008)
+
+All off by default; each flags the readings it moves by more than the quantisation step.
+
+| Effect | Model | Flag |
+|---|---|---|
+| PM hygroscopic growth | PM × C(RH)/C(rhRef), with C = 1 + (κ/1.65)/(1/aw − 1) (Crilley et al. 2018), κ = 0.3, rhRef = 40 %RH, aw capped at 0.98 | `pm-humidity` |
+| MOx humidity and temperature | + r·0.008·(RH − 45) + r·0.01·(T − 22) (assumed; direction per Abdullah et al. 2022) | `mox-humidity`, `mox-temperature` |
+| MOx ethanol (hand gel) | + 1.0 × lagged ethanol ppb (the sensor is calibrated against ethanol, S1) | `mox-ethanol` |
+| MOx baseline | Ornstein–Uhlenbeck, SD 15 ppb, time constant 3 days (assumed) | `mox-baseline` |
+| NDIR ABC | Every 192 powered hours, offset += clamp(400 − lowest reading, ±50 ppm) (Senseair S8 PSP0107: 8-day period, 30–50 ppm per period) | `abc-offset` |
+| Warm-up | After power-on (all parameters) or module replacement (its parameters): offset ±(0.5–1)×1.5 E decaying ×e⁻³ over the warm-up (PM 30 s, CO2 180 s, MOx 3,600 s, electrochemical 3,600 s, temperature/humidity 900 s). Any interval overlapping the warm-up is flagged; `suppress` drops those readings instead | `warm-up` |
+| Outliers | With probability `perReading`, value = r ± (E + q + Exp·E) | `outlier` |
+
+Ethanol is an interferent in the true-air input (`ethanol`, ppb): it is not part of true TVOC, so it moves the reading but not the reference.
+
 ## Random streams
 
 Streams are `createRng([seed, ...parts].join("/"))` (sfc32 seeded by xmur3, ported from the care home):
 
-`bay{n}/install{k}/bias|drift/{param}`, `onboard/cal{k}/bias|drift/{param}`, `noise/{param}`, `dropout/{param}`, `dropout/device`, `offline`.
+`bay{n}/install{k}/bias|drift/{param}`, `onboard/cal{k}/bias|drift/{param}`, `noise/{param}`, `outlier/{param}`, `dropout/{param}`, `dropout/device`, `offline`, `mox-baseline`, `warm-up/{param}/{count}`.
 
-Every interval draws one normal per parameter (noise), one uniform per parameter (dropout), one for device dropout and two for outages, whatever the switches say. So a switch never shifts another stream (tested for dropouts and parameter subsets).
+Every interval draws: one normal per parameter (noise), three uniforms per parameter (outlier), one uniform per parameter (dropout), one for device dropout, two for outages and one normal for the MOx baseline, whatever the switches say. So a switch never shifts another stream (tested for dropouts, outliers and parameter subsets).

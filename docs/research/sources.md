@@ -28,4 +28,8 @@ Everything consulted on 2026-09-30, with what each gave us and how far it can be
 
 | Source | Used for |
 |---|---|
-| Senseair S8 Residential product specification PSP0107 ed. 18 | Response 2 min to 90% (a typical NDIR T90) |
+| Crilley et al. 2018, *Atmos. Meas. Tech.* 11, 709–720, doi:10.5194/amt-11-709-2018 | κ-Köhler RH correction, κ = 0.3, over-reading 2.5–3.9× at high RH |
+| Abdullah et al. 2022, *Sensors* 22(9), 3301, doi:10.3390/s22093301 | MOx response vs temperature and humidity (direction) |
+| Senseair S8 Residential product specification PSP0107 ed. 18 | ABC: 8-day period, 400 ppm, 30–50 ppm per period; response 2 min to 90% |
+| Sensirion SCD4x datasheet | ASC: 44 h initial, 156 h standard period, 400 ppm |
+| Plantower PMS5003 data manual (AQ-SPEC copy) | 30 s to stable data after wake-up (fan) |

@@ -14,6 +14,14 @@ export type Flag =
   | "module-expired"
   /** An on-board sensor is past its drift horizon without recalibration. */
   | "calibration-overdue"
+  | "warm-up"
+  | "outlier"
+  | "pm-humidity"
+  | "mox-humidity"
+  | "mox-temperature"
+  | "mox-ethanol"
+  | "mox-baseline"
+  | "abc-offset"
   /** Buffered while offline and delivered on reconnect (not a health issue). */
   | "backfilled";
 
@@ -23,6 +31,14 @@ export const HEALTH_FLAGS: readonly Flag[] = [
   "extended-range",
   "module-expired",
   "calibration-overdue",
+  "warm-up",
+  "outlier",
+  "pm-humidity",
+  "mox-humidity",
+  "mox-temperature",
+  "mox-ethanol",
+  "mox-baseline",
+  "abc-offset",
 ];
 
 export interface Reading {
@@ -70,6 +86,7 @@ export interface DeviceStatus {
   bufferedMinutes: number;
   modules: ModuleStatus[];
   onboardAgeDays: number;
+  abcOffsetPpm: number;
 }
 
 export interface StepResult {

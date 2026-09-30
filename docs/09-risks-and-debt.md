@@ -2,7 +2,7 @@
 
 **Purpose:** what could make the virtual sensor wrong, and what we are knowingly carrying.
 
-> Status: updated 2026-09-30 (end of M3a).
+> Status: updated 2026-09-30 (end of M3).
 
 ## Open risks
 
@@ -14,7 +14,7 @@
 | R4 | Response times other than PM are assumptions, and the PM one (10 s) is from a reseller listing we could not open. | Lag and the reference used for accuracy depend on them. | Published T90s, or a step test on a real device. |
 | R5 | TVOC name: the 2025-02-26 docs make `tvoc` current and `rtvoc` deprecated, but every example and Home Assistant use `rtvoc`. | A client reading only one name misses TVOC. | Live responses show what the API returns today. Until then both names are returned (ADR-0004). |
 | R6 | CSV export columns are undocumented. | The CSV formatter (M4) cannot match the real export. | The user provides an export sample. |
-| R7 | Kaiterra's accuracy figures are treated as hard bounds. Real specifications are usually typical or statistical. | The default device may be more accurate than real ones. The `looser` profile widens it; condition effects and outliers are planned (M3b). | Real-device comparison data. |
+| R7 | Kaiterra's accuracy figures are treated as hard bounds. Real specifications are usually typical or statistical. | The default device may be more accurate than real ones. The `looser` profile, condition effects and outliers exist to widen it. | Real-device comparison data. |
 
 ## Assumptions (each in an ADR)
 
@@ -22,10 +22,13 @@
 - T90: CO2 120 s, TVOC 60 s, electrochemical 60 s, humidity 300 s, temperature 600 s (ADR-0003).
 - KM-201 and KM-208 life 21 months; on-board drift horizon 730 days (ADR-0003).
 - The bias/drift/noise split 0.5/0.25/0.25 and AR(1) 0.5 noise (ADR-0002).
+- Condition-effect magnitudes: MOx humidity 0.8%/%RH, temperature 1%/°C, baseline SD 15 ppb over 3 days; PM calibration humidity 40 %RH; warm-up durations (ADR-0008).
 - Online readings arrive at the cloud at the interval's end (no upload latency).
 
 ## Known modelling limits
 
+- ABC, when enabled, assumes the lowest reading of each 8-day period is 400 ppm. Outdoor CO2 is now about 420 ppm, so a well-ventilated room gets an offset of about −20 ppm. That is how real ABC sensors behave, and the reason it is off by default.
+- Warm-up behaviour of the real device (whether it reports during warm-up at all) is unknown; `suppress` covers both cases.
 - The sim clock has no DST, so from 28 Mar 2027 the care home's clock times are GMT, not UK local time. The Unix mapping stays exact; only local-time labels would drift. Relevant if `time_zone` grouping (M4) is used with `Europe/London`.
 - Temperature and humidity use one first-order lag each; the real enclosure's thermal response is more complex.
 

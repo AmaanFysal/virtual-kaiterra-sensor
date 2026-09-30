@@ -1,5 +1,5 @@
 // The virtual Sensedge Mini (docs/03). A streaming state machine stepped on the sampling grid:
-// sample → lag → interval mean → bounded error → clamp → quantise →
+// sample → lag → interval mean → bounded error → condition effects → clamp → quantise →
 // availability (dropouts, offline buffer, backfill). The batch runner and the plug-in adapter
 // both drive this one engine.
 //
@@ -13,6 +13,7 @@ import { MODULES, VARIANTS, moduleForParam, type ModuleType } from "../spec/modu
 import { SENSEDGE_MINI, envelope, quantisationError, quantise, reportRange, specRange } from "../spec/sensedge-mini.js";
 import { SECONDS_PER_DAY } from "../time.js";
 import { resolveConfig, type DeviceConfig, type DeviceConfigInput, type DeviceEvent } from "./config.js";
+import { moxTerms, ouStep, pmHumidityGrowth, technologyOf, warmUpOffset } from "./conditions.js";
 import { ar1, boundedError, usableEnvelope } from "./error.js";
 import { lagAlpha, lagStep } from "./lag.js";
 import type { DeviceStatus, Flag, LogEntry, ModuleStatus, Reading, StepResult } from "./types.js";
@@ -41,6 +42,8 @@ interface Accumulator {
   trueSum: number;
 }
 
+const PM_PARAMS: readonly ParamId[] = ["pm1", "pm25", "pm10"];
+
 function serialFor(seed: string, bay: number, installIndex: number): string {
   const n = parseInt(hashString(`${seed}/bay${bay}/install${installIndex}`), 16) % 100_000_000;
   return `VH${String(n).padStart(8, "0")}`;
@@ -48,7 +51,7 @@ function serialFor(seed: string, bay: number, installIndex: number): string {
 
 export function createDevice(input: DeviceConfigInput | DeviceConfig): Device {
   const config = resolveConfig(input);
-  const { seed, sampleIntervalS: dt, reportIntervalS: span, errorBudget } = config;
+  const { seed, sampleIntervalS: dt, reportIntervalS: span, errorBudget, conditions: cond } = config;
   const variant = VARIANTS[config.variant];
   const params = PARAMS.filter((p) => config.params.includes(p));
   const samplesPerInterval = span / dt;
@@ -72,8 +75,10 @@ export function createDevice(input: DeviceConfigInput | DeviceConfig): Device {
 
   const lag = new Map<string, number | undefined>();
   const alpha = new Map<string, number>(params.map((p) => [p, lagAlpha(SENSEDGE_MINI[p].t90.seconds, dt)]));
+  alpha.set("ethanol", lagAlpha(SENSEDGE_MINI.tvoc.t90.seconds, dt));
 
-  const channels: string[] = [...params];
+  // Channels sampled each tick: the reported parameters plus the condition inputs, once each.
+  const channels: string[] = [...new Set<string>([...params, "ethanol", "rh", "temp"])];
   const acc = new Map<string, Accumulator>();
   const resetAcc = () => {
     for (const key of channels) acc.set(key, { count: 0, refSum: 0, trueSum: 0 });
@@ -94,9 +99,31 @@ export function createDevice(input: DeviceConfigInput | DeviceConfig): Device {
 
   const noiseRng = new Map<ParamId, Rng>(params.map((p) => [p, stream(seed, "noise", p)]));
   const noiseZ = new Map<ParamId, number>(params.map((p) => [p, 0]));
+  const outlierRng = new Map<ParamId, Rng>(params.map((p) => [p, stream(seed, "outlier", p)]));
   const dropoutRng = new Map<ParamId, Rng>(params.map((p) => [p, stream(seed, "dropout", p)]));
   const deviceDropoutRng = stream(seed, "dropout", "device");
   const offlineRng = stream(seed, "offline");
+  const baselineRng = stream(seed, "mox-baseline");
+  let moxBaseline = 0;
+
+  // Warm-up: start time and signed initial size (in envelopes) per parameter.
+  const warmUp = new Map<ParamId, { start: number; initial: number }>();
+  let warmUpCount = 0;
+  const startWarmUp = (t: number, which: readonly ParamId[]) => {
+    if (!cond.warmUp.enabled) return;
+    for (const p of which) {
+      if (!params.includes(p)) continue;
+      const rng = stream(seed, "warm-up", p, String(warmUpCount));
+      const sign = rng.chance(0.5) ? 1 : -1;
+      warmUp.set(p, { start: t, initial: sign * rng.uniform(0.5, 1) * cond.warmUp.initialEnvelopes });
+    }
+    warmUpCount += 1;
+  };
+
+  // ABC: offset applied to CO2, and the lowest reading of the current period.
+  let abcOffset = 0;
+  let abcPeriodMin = Infinity;
+  let abcPoweredSeconds = 0;
 
   // Offline buffer: one group of readings per reporting interval.
   const buffer: Reading[][] = [];
@@ -122,7 +149,10 @@ export function createDevice(input: DeviceConfigInput | DeviceConfig): Device {
         if (e.on === powered) return;
         powered = e.on;
         out.log.push({ t, kind: e.on ? "power-on" : "power-off" });
-        if (e.on) lag.clear();
+        if (e.on) {
+          lag.clear();
+          startWarmUp(t, params);
+        }
         return;
       case "network": {
         const wasOnline = online();
@@ -139,13 +169,16 @@ export function createDevice(input: DeviceConfigInput | DeviceConfig): Device {
         const moduleParams = MODULES[m.type].params.filter((p) => params.includes(p));
         moduleParams.forEach(drawModuleErrors);
         for (const p of moduleParams) lag.delete(p);
+        if (moduleParams.includes("tvoc")) lag.delete("ethanol");
         out.log.push({ t, kind: "module-replaced", bay: e.bay, module: m.type, serial: m.serial });
+        startWarmUp(t, moduleParams);
         return;
       }
       case "recalibrate":
         onboardAgeDays = 0;
         calibrationIndex += 1;
         variant.onboard.filter((p) => params.includes(p)).forEach(drawModuleErrors);
+        abcOffset = 0;
         out.log.push({ t, kind: "recalibrated" });
         return;
     }
@@ -166,6 +199,7 @@ export function createDevice(input: DeviceConfigInput | DeviceConfig): Device {
     onboardAgeDays += dt / SECONDS_PER_DAY;
     if (powered) {
       poweredTicks += 1;
+      abcPoweredSeconds += dt;
       for (const m of modules) m.used += dt / (moduleLifeDays(m, air?.pm25) * SECONDS_PER_DAY);
       for (const key of channels) {
         const x = air?.[key as keyof TrueAir];
@@ -195,11 +229,14 @@ export function createDevice(input: DeviceConfigInput | DeviceConfig): Device {
     const draws = params.map((p) => {
       const z = ar1(noiseZ.get(p)!, config.noiseAutocorrelation, noiseRng.get(p)!.normal());
       noiseZ.set(p, z);
-      return { param: p, noiseZ: z, dropoutU: dropoutRng.get(p)!.next() };
+      const o = outlierRng.get(p)!;
+      return { param: p, noiseZ: z, outlierU: o.next(), outlierSign: o.next() < 0.5 ? -1 : 1, outlierExcess: -Math.log(1 - o.next()), dropoutU: dropoutRng.get(p)!.next() };
     });
     const deviceDropped = deviceDropoutRng.next() < config.availability.deviceDropoutPerMinute;
     const offlineU = offlineRng.next();
     const offlineLen = offlineRng.next();
+    const baselineEps = baselineRng.normal();
+    moxBaseline = ouStep(moxBaseline, cond.mox.baselineSdPpb, cond.mox.baselineTauDays, span / SECONDS_PER_DAY, baselineEps);
 
     // Random network outages.
     if (outageUntil !== undefined && ts >= outageUntil) {
@@ -214,7 +251,14 @@ export function createDevice(input: DeviceConfigInput | DeviceConfig): Device {
       outageUntil = ts + minutes * 60;
     }
 
+    const acceptAbcPeriod = cond.abc.enabled && abcPoweredSeconds >= cond.abc.periodHours * 3600;
     const readings: Reading[] = [];
+    const rhAcc = acc.get("rh")!;
+    const tempAcc = acc.get("temp")!;
+    const ethAcc = acc.get("ethanol")!;
+    const rh = rhAcc.count > 0 ? rhAcc.trueSum / rhAcc.count : undefined;
+    const temp = tempAcc.count > 0 ? tempAcc.trueSum / tempAcc.count : undefined;
+    const ethanolLagged = ethAcc.count > 0 ? ethAcc.refSum / ethAcc.count : undefined;
 
     for (const d of draws) {
       const p = d.param;
@@ -231,8 +275,46 @@ export function createDevice(input: DeviceConfigInput | DeviceConfig): Device {
       const eq = usableEnvelope(e, q);
       const used = usedFor(p);
       const flags: Flag[] = [];
-      const v = r + boundedError(eq, errorBudget, { bias: biasDraw.get(p)!, drift: driftDraw.get(p)!, noiseZ: d.noiseZ }, used);
+      let v = r + boundedError(eq, errorBudget, { bias: biasDraw.get(p)!, drift: driftDraw.get(p)!, noiseZ: d.noiseZ }, used);
 
+      const flagIf = (delta: number, flag: Flag) => {
+        if (Math.abs(delta) > q) flags.push(flag);
+      };
+      if (cond.pmHumidity.enabled && PM_PARAMS.includes(p) && rh !== undefined) {
+        const delta = r * (pmHumidityGrowth(rh, cond.pmHumidity) - 1);
+        v += delta;
+        flagIf(delta, "pm-humidity");
+      }
+      if (cond.mox.enabled && p === "tvoc") {
+        const terms = moxTerms(r, rh, temp, ethanolLagged, cond.mox);
+        v += terms.humidity + terms.temperature + terms.ethanol + moxBaseline;
+        flagIf(terms.humidity, "mox-humidity");
+        flagIf(terms.temperature, "mox-temperature");
+        flagIf(terms.ethanol, "mox-ethanol");
+        flagIf(moxBaseline, "mox-baseline");
+      }
+      if (cond.abc.enabled && p === "co2") {
+        v += abcOffset;
+        abcPeriodMin = Math.min(abcPeriodMin, v);
+        flagIf(abcOffset, "abc-offset");
+      }
+      const w = warmUp.get(p);
+      let suppress = false;
+      if (w !== undefined) {
+        // An interval that overlaps the warm-up is affected; its mean offset is taken at the midpoint.
+        const duration = cond.warmUp.seconds[technologyOf(p)];
+        if (windowStart < w.start + duration) {
+          v += warmUpOffset(w.initial * e, Math.max(0, ts - span / 2 - w.start), duration);
+          flags.push("warm-up");
+          suppress = cond.warmUp.suppress;
+        } else {
+          warmUp.delete(p);
+        }
+      }
+      if (cond.outliers.enabled && d.outlierU < cond.outliers.perReading) {
+        v = r + d.outlierSign * (e + q + d.outlierExcess * cond.outliers.meanExcessEnvelopes * e);
+        flags.push("outlier");
+      }
       if (used > 1) flags.push(moduleForParam(variant.bays, p) ? "module-expired" : "calibration-overdue");
       const [lo, hi] = specRange(p, config.specProfile);
       const [, reportHi] = reportRange(p, config.specProfile);
@@ -240,6 +322,7 @@ export function createDevice(input: DeviceConfigInput | DeviceConfig): Device {
       else if (r > hi) flags.push("extended-range");
 
       const value = quantise(p, Math.min(reportHi, Math.max(lo, v)));
+      if (suppress) continue;
       if (deviceDropped || d.dropoutU < config.availability.paramDropoutPerMinute) {
         out.log.push({ t: ts, kind: "dropout", ts, param: deviceDropped ? "all" : p });
         continue;
@@ -257,6 +340,15 @@ export function createDevice(input: DeviceConfigInput | DeviceConfig): Device {
         envelope: e,
         flags,
       });
+    }
+
+    if (acceptAbcPeriod) {
+      if (Number.isFinite(abcPeriodMin)) {
+        const step = cond.abc.targetPpm - abcPeriodMin;
+        abcOffset += Math.max(-cond.abc.maxStepPpm, Math.min(cond.abc.maxStepPpm, step));
+      }
+      abcPeriodMin = Infinity;
+      abcPoweredSeconds = 0;
     }
 
     resetAcc();
@@ -283,6 +375,7 @@ export function createDevice(input: DeviceConfigInput | DeviceConfig): Device {
       if (last === undefined) {
         startedAt = t;
         last = t - dt;
+        if (cond.warmUp.enabled && cond.warmUp.atStart) startWarmUp(t, params);
       }
       for (let tt = last + dt; tt <= t; tt += dt) tick(tt, tt === t ? air : null, out);
       last = t;
@@ -310,6 +403,7 @@ export function createDevice(input: DeviceConfigInput | DeviceConfig): Device {
         bufferedMinutes: buffer.length,
         modules: moduleStatus,
         onboardAgeDays,
+        abcOffsetPpm: abcOffset,
       };
     },
     undelivered() {
