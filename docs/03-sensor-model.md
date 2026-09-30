@@ -9,7 +9,8 @@
 `createDevice(config)` returns a streaming state machine stepped on the sampling grid: `device.step(t, air)` with `t` a multiple of the sampling interval (Unix seconds) and `air` the true air at `t` (or `null`). It returns the readings delivered during that step and a log. `device.apply(event)` queues power, network, module-replacement and recalibration events; `device.status()` gives module health and connectivity (for `GET /devices/{id}` later).
 
 - **Batch** (`simulate(config, samples)`): resamples an irregular true-air series onto the grid by linear interpolation (gaps over `maxGapS`, default 600 s, count as unknown) and steps through it.
-- **Plug-in** (M9): the host steps the device on its own 5 s tick. Stepping live and in batch give identical readings (tested).
+- **Replay** (`createReplayDevice`): steps a recorded series lazily up to a query time. Batch `simulate` and the HTTP server (M8) both use it.
+- **Plug-in** (M9, on hold): the host steps the device on its own 5 s tick. Stepping live and in batch give identical readings (tested).
 
 Steps may skip ahead; the skipped ticks are processed with no air. Events apply at the first tick at or after their time, before that tick closes its interval.
 
