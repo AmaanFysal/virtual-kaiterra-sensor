@@ -2,7 +2,7 @@
 
 **Purpose:** what could make the virtual sensor wrong, and what we are knowingly carrying.
 
-> Status: updated 2026-09-30 (end of M2).
+> Status: updated 2026-09-30 (end of M3a).
 
 ## Open risks
 
@@ -22,6 +22,7 @@
 - T90: CO2 120 s, TVOC 60 s, electrochemical 60 s, humidity 300 s, temperature 600 s (ADR-0003).
 - KM-201 and KM-208 life 21 months; on-board drift horizon 730 days (ADR-0003).
 - The bias/drift/noise split 0.5/0.25/0.25 and AR(1) 0.5 noise (ADR-0002).
+- Online readings arrive at the cloud at the interval's end (no upload latency).
 
 ## Known modelling limits
 

@@ -162,6 +162,15 @@ describe("determinism", () => {
     expect(sha256(a.readings.map((r) => r.value))).not.toBe(sha256(b.readings.map((r) => r.value)));
   });
 
+  it("switching dropouts on removes readings but never changes the others", () => {
+    const base = simulate({ deviceId: "d", seed: "iso" }, input);
+    const dropped = simulate({ deviceId: "d", seed: "iso", availability: { paramDropoutPerMinute: 0.2, deviceDropoutPerMinute: 0.05 } }, input);
+    const key = (r: { param: string; ts: number }) => `${r.param}@${r.ts}`;
+    const baseValues = new Map(base.readings.map((r) => [key(r), r.value]));
+    expect(dropped.readings.length).toBeLessThan(base.readings.length * 0.9);
+    for (const r of dropped.readings) expect(r.value).toBe(baseValues.get(key(r)));
+  });
+
   it("reporting a subset of parameters leaves the others' values unchanged", () => {
     const all = simulate({ deviceId: "d", seed: "sub" }, input);
     const some = simulate({ deviceId: "d", seed: "sub", params: ["co2", "pm25"] }, input);
@@ -176,8 +185,8 @@ describe("determinism", () => {
     };
     expect({ default: sha256(golden.default), well: sha256(golden.well) }).toMatchInlineSnapshot(`
       {
-        "default": "9d5c6229cc5da5beabc3d23f8e17ab88bdffe00bdcd24d31037bb91d8457d133",
-        "well": "b5dbb72b53e9720ad3d1cecedaa4120c24fdaf2fe5cdbf1175510e911dc9d9c5",
+        "default": "62bb84af58c5d654126ba37ccdc5b8ceadd5e633326032e96cef5f8e5ed16279",
+        "well": "70e50faf9b5b738cadf94de82d077b08db6334b73f36b20a536130e8facb786d",
       }
     `);
   });

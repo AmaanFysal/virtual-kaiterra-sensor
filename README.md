@@ -20,6 +20,6 @@ const result = simulate(
 result.readings; // [{ param: "co2", ts, span: 60, value, source?, … }]
 ```
 
-Status: core sensor model (M0–M2). See `docs/workstreams/v1-standalone-sensor/` for what comes next.
+Status: core model with device lifecycle and availability (M0–M3a). See `docs/workstreams/v1-standalone-sensor/` for what comes next.
 
 Design docs start at [CLAUDE.md](CLAUDE.md) and [docs/](docs/). Kaiterra's specifications and API are cited in [docs/02](docs/02-sensedge-mini-reference.md).

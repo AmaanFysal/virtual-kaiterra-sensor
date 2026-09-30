@@ -4,13 +4,14 @@
 
 ## Status
 
-M0, M1 and M2 built (2026-09-30). Tests pass; typecheck clean.
+M0, M1, M2 and M3a built (2026-09-30). Tests pass; typecheck clean.
 
 ## Done
 
 - **M0 scaffold and governance:** pnpm workspace (`@vks/core`, `@vks/cli`); TypeScript 7 and Vitest 5 as in the care home; `.claude/settings.json` attribution off; `.githooks/` (commit-msg, patterns, docs checker) and `no-ai-attribution.yml` copied from the care home; new `ci.yml` (typecheck, test, key grep); determinism guard test over `packages/*/src`; CLAUDE.md, docs 00–09, ADR template, skills and rules.
 - **M1 reference and fixtures:** docs/02 with sources S1–S7; `core/spec` (spec table, four profiles, envelope, ranges, quantisation, modules, variants, citations); care home time mapping verified against its `time.ts`; ten provisional fixtures with provenance sidecars and a README; `vks fixtures:fetch` (skips without a key; redacts the key everywhere).
 - **M2 core model:** streaming `createDevice` and batch `simulate`; 5 s sampling, first-order lag from T90, 1-minute means labelled by their end, bounded bias/drift/noise, clamp, quantise, side channel and flags.
+- **M3a lifecycle:** module aging by runtime and PM exposure, replacement (new serial, bias, drift), on-board recalibration, dropouts, network outages with the 1-hour buffer and backfill, power.
 - **ADRs:** 0001 time and cadence; 0002 bounded error and profiles; 0003 unpublished values; 0004 TVOC as both names (Accepted); 0005 workspace; 0006 sim owns the air (Proposed); 0007 BACnet view first.
 
 ## In progress
@@ -19,7 +20,7 @@ Nothing.
 
 ## Next
 
-- M3a lifecycle and availability.
+- M3b condition effects.
 
 ## Blockers
 

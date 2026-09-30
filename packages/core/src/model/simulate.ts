@@ -14,8 +14,10 @@ export interface SimulateOptions {
 
 export interface SimulationResult {
   config: DeviceConfig;
-  /** Readings, sorted by (ts, param). */
+  /** Delivered readings, sorted by (ts, param). */
   readings: Reading[];
+  /** Readings still in the onboard buffer at the end (the device was offline). */
+  undelivered: Reading[];
   log: LogEntry[];
   status: DeviceStatus;
 }
@@ -41,7 +43,7 @@ export function simulate(configInput: DeviceConfigInput | DeviceConfig, samples:
   const sorted = [...samples].sort((x, y) => x.t - y.t);
   const readings: Reading[] = [];
   const log: LogEntry[] = [];
-  if (sorted.length === 0) return { config: device.config, readings, log, status: device.status() };
+  if (sorted.length === 0) return { config: device.config, readings, undelivered: [], log, status: device.status() };
 
   const first = Math.ceil(sorted[0]!.t / dt) * dt;
   const lastT = Math.floor(sorted[sorted.length - 1]!.t / dt) * dt;
@@ -58,7 +60,7 @@ export function simulate(configInput: DeviceConfigInput | DeviceConfig, samples:
     log.push(...out.log);
   }
   readings.sort((x, y) => x.ts - y.ts || PARAMS.indexOf(x.param) - PARAMS.indexOf(y.param));
-  return { config: device.config, readings, log, status: device.status() };
+  return { config: device.config, readings, undelivered: device.undelivered(), log, status: device.status() };
 }
 
 /** Readings of one parameter, in time order. */

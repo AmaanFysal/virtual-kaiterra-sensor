@@ -1,16 +1,35 @@
 // Device configuration (docs/03). Everything that makes one virtual device differ from
-// another lives here: seed, variant, spec profile, error budget and module state.
+// another lives here: seed, variant, spec profile, error budget, module state and schedules.
 // `resolveConfig` fills defaults and validates.
 
 import type { ParamId } from "../params.js";
 import { DEFAULT_SPEC_PROFILE, SPEC_PROFILES, type SpecProfile } from "../spec/sensedge-mini.js";
 import { VARIANTS, variantParams, type Variant } from "../spec/modules.js";
 
+/** Scheduled or injected device events. `t` is Unix seconds. */
+export type DeviceEvent =
+  | { t: number; kind: "power"; on: boolean }
+  | { t: number; kind: "network"; online: boolean }
+  | { t: number; kind: "replace-module"; bay: 0 | 1 }
+  | { t: number; kind: "recalibrate" };
+
 /** Fractions of the spec envelope each error component may use (ADR-0002). Sum ≤ 1. */
 export interface ErrorBudget {
   bias: number;
   drift: number;
   noise: number;
+}
+
+export interface AvailabilityConfig {
+  /** Chance a whole minute is missing from every parameter. */
+  deviceDropoutPerMinute: number;
+  /** Chance one parameter's minute is missing. */
+  paramDropoutPerMinute: number;
+  /** Random network outages: expected count per day and mean length. */
+  randomOfflinePerDay: number;
+  randomOfflineMeanMinutes: number;
+  /** Onboard memory while offline, in minutes of readings (S1, S2: "1 hour of data"). */
+  bufferMinutes: number;
 }
 
 export interface DeviceConfig {
@@ -36,6 +55,8 @@ export interface DeviceConfig {
   onboardAgeDays: number;
   /** On-board drift reaches its full budget after this many days (ADR-0003 assumption). */
   onboardDriftHorizonDays: number;
+  events: DeviceEvent[];
+  availability: AvailabilityConfig;
 }
 
 type DeepPartial<T> = { [K in keyof T]?: T[K] extends (infer U)[] ? U[] : T[K] extends object ? DeepPartial<T[K]> : T[K] };
@@ -64,6 +85,15 @@ export function resolveConfig(input: DeviceConfigInput): DeviceConfig {
     moduleLifetimePct: (input.moduleLifetimePct as [number, number] | undefined) ?? [100, 100],
     onboardAgeDays: input.onboardAgeDays ?? 0,
     onboardDriftHorizonDays: input.onboardDriftHorizonDays ?? 730,
+    events: [...(input.events ?? [])] as DeviceEvent[],
+    availability: {
+      deviceDropoutPerMinute: 0,
+      paramDropoutPerMinute: 0,
+      randomOfflinePerDay: 0,
+      randomOfflineMeanMinutes: 30,
+      bufferMinutes: 60,
+      ...input.availability,
+    },
   };
   validateConfig(config);
   return config;
@@ -82,4 +112,8 @@ function validateConfig(c: DeviceConfig): void {
   if (c.noiseAutocorrelation < 0 || c.noiseAutocorrelation >= 1) fail("noiseAutocorrelation must be in [0, 1)");
   if (c.moduleLifetimePct.length !== 2 || c.moduleLifetimePct.some((p) => p < 0 || p > 100)) fail("moduleLifetimePct needs two values in [0, 100]");
   if (c.minCoverage <= 0 || c.minCoverage > 1) fail("minCoverage must be in (0, 1]");
+  if (c.availability.bufferMinutes < 0) fail("bufferMinutes must be ≥ 0");
+  for (const e of c.events) {
+    if (!Number.isInteger(e.t)) fail(`event times must be whole seconds (got ${e.t})`);
+  }
 }

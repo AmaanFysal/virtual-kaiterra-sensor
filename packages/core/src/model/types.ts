@@ -13,7 +13,9 @@ export type Flag =
   /** The module is past 0% health; its drift has outgrown the budget. */
   | "module-expired"
   /** An on-board sensor is past its drift horizon without recalibration. */
-  | "calibration-overdue";
+  | "calibration-overdue"
+  /** Buffered while offline and delivered on reconnect (not a health issue). */
+  | "backfilled";
 
 /** Flags that mean the reading may be outside the spec envelope. */
 export const HEALTH_FLAGS: readonly Flag[] = [
@@ -33,6 +35,8 @@ export interface Reading {
   value: number;
   /** Kaiterra API `source` (module), absent for on-board sensors. */
   source?: string;
+  /** When the reading reaches the cloud: `ts` when online, the reconnect time when backfilled. */
+  deliveredAt: number;
   /** Side channel: interval mean of the lagged true value, the target of the accuracy spec. */
   reference: number;
   /** Side channel: interval mean of the true value, without sensor lag. */
@@ -42,7 +46,12 @@ export interface Reading {
   flags: Flag[];
 }
 
-export type LogEntry = { t: number; kind: "no-input"; ts: number; param: ParamId };
+export type LogEntry =
+  | { t: number; kind: "power-on" | "power-off" | "offline" | "online" | "recalibrated" }
+  | { t: number; kind: "module-replaced"; bay: number; module: ModuleType; serial: string }
+  | { t: number; kind: "buffer-overflow"; ts: number }
+  | { t: number; kind: "dropout"; ts: number; param: ParamId | "all" }
+  | { t: number; kind: "no-input"; ts: number; param: ParamId };
 
 export interface ModuleStatus {
   bay: number;
@@ -51,16 +60,20 @@ export interface ModuleStatus {
   serial: string;
   /** API `lifetime_pct`: 100 when new, 0 at end of life. */
   lifetimePct: number;
+  installIndex: number;
 }
 
 export interface DeviceStatus {
   t: number | undefined;
+  powered: boolean;
+  online: boolean;
+  bufferedMinutes: number;
   modules: ModuleStatus[];
   onboardAgeDays: number;
 }
 
 export interface StepResult {
-  /** Readings reported during this step, in (ts, param) order. */
+  /** Readings that reached the cloud during this step, in (ts, param) order. */
   delivered: Reading[];
   log: LogEntry[];
 }
