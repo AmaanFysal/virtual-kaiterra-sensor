@@ -1,0 +1,32 @@
+name: CI
+
+# Typecheck and test on every push and PR. The tests include the determinism guard
+# (no wall-clock time or Math.random in packages/*/src) and the fixture secret check.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+      - name: No API key in committed files
+        run: |
+          if git grep -nE 'key=[A-Za-z0-9_-]{16,}' -- ':!.github/**'; then
+            echo "::error::A committed file contains what looks like an API key."
+            exit 1
+          fi
