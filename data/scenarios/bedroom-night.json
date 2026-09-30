@@ -1,0 +1,106 @@
+{
+  "id": "bedroom-night",
+  "description": "A resident's evening and night in Room 1: awake, a carer's bedtime visit, door closed for sleep, a 02:00 check, morning care.",
+  "start": "2026-11-03T20:00:00Z",
+  "durationMinutes": 720,
+  "room": {
+    "id": "Room1",
+    "floorAreaM2": 19,
+    "ceilingHeightM": 2.4,
+    "baseAch": 0.3
+  },
+  "timeline": [
+    {
+      "atMinutes": 0,
+      "type": "occupants",
+      "group": "resident",
+      "who": "resident",
+      "activity": "seated",
+      "count": 1
+    },
+    {
+      "atMinutes": 90,
+      "type": "occupants",
+      "group": "staff",
+      "who": "staff",
+      "activity": "care",
+      "count": 1
+    },
+    {
+      "atMinutes": 110,
+      "type": "occupants",
+      "group": "staff",
+      "who": "staff",
+      "activity": "care",
+      "count": 0
+    },
+    {
+      "atMinutes": 120,
+      "type": "occupants",
+      "group": "resident",
+      "who": "resident",
+      "activity": "sleeping",
+      "count": 1
+    },
+    {
+      "atMinutes": 120,
+      "type": "door",
+      "open": false
+    },
+    {
+      "atMinutes": 360,
+      "type": "door",
+      "open": true
+    },
+    {
+      "atMinutes": 360,
+      "type": "occupants",
+      "group": "staff",
+      "who": "staff",
+      "activity": "light",
+      "count": 1
+    },
+    {
+      "atMinutes": 365,
+      "type": "occupants",
+      "group": "staff",
+      "who": "staff",
+      "activity": "light",
+      "count": 0
+    },
+    {
+      "atMinutes": 365,
+      "type": "door",
+      "open": false
+    },
+    {
+      "atMinutes": 660,
+      "type": "door",
+      "open": true
+    },
+    {
+      "atMinutes": 660,
+      "type": "occupants",
+      "group": "resident",
+      "who": "resident",
+      "activity": "seated",
+      "count": 1
+    },
+    {
+      "atMinutes": 660,
+      "type": "occupants",
+      "group": "staff",
+      "who": "staff",
+      "activity": "care",
+      "count": 1
+    },
+    {
+      "atMinutes": 690,
+      "type": "occupants",
+      "group": "staff",
+      "who": "staff",
+      "activity": "care",
+      "count": 0
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "id": "out-of-range-high",
+  "description": "Air beyond the sensor's ranges: a PM2.5 of 1,500, CO2 in the extended range, TVOC over 1,382 ppb.",
+  "start": "2026-11-03T12:00:00Z",
+  "durationMinutes": 180,
+  "room": {
+    "id": "Room1",
+    "floorAreaM2": 19,
+    "ceilingHeightM": 2.4,
+    "baseAch": 0.5
+  },
+  "timeline": [
+    {
+      "atMinutes": 30,
+      "type": "set",
+      "values": {
+        "pm1": 1200,
+        "pm25": 1500,
+        "pm10": 1800
+      }
+    },
+    {
+      "atMinutes": 90,
+      "type": "set",
+      "values": {
+        "co2": 7000
+      }
+    },
+    {
+      "atMinutes": 120,
+      "type": "set",
+      "values": {
+        "tvoc": 3000
+      }
+    }
+  ]
+}

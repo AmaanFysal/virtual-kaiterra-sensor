@@ -4,7 +4,7 @@
 
 ## Status
 
-M0 on main; M1–M3b in PR #1 (checks pass); M4 built on the same branch with the review fixes (2026-09-30). 147 tests pass; typecheck clean.
+M0–M4 merged to main (PR #1). M5 built on branch `v1-generator-and-tools` (2026-09-30). 188 tests pass; typecheck clean.
 
 ## Done
 
@@ -14,7 +14,8 @@ M0 on main; M1–M3b in PR #1 (checks pass); M4 built on the same branch with th
 - **M3a lifecycle:** module aging by runtime and PM exposure, replacement (new serial, bias, drift), on-board recalibration, dropouts, network outages with the 1-hour buffer and backfill, power.
 - **M3b condition effects:** PM hygroscopic growth, MOx humidity/temperature/ethanol and baseline, NDIR ABC, warm-up (flag or suppress), outliers; all off by default.
 - **M4 output formats:** pure Kaiterra API router (`/devices/{id}`, `/top`, `/history` with `group_by`, `time_zone` and pagination, `/batch`, errors) with TVOC as both names; Secondary MQTT Formats 1 and 2; BACnet object view per the PICS; CSV. Contract tests against the fixtures; format guesses listed in docs/09. Review fixes: BACnet codes verified against bacnet-stack and @bacnet-js/client; hourly :15 explained by the docs (Asia/Kathmandu, on the hour in local time) and reproduced in a test; `limit` now means latest N as documented.
-- **ADRs:** 0001 time and cadence; 0002 bounded error and profiles; 0003 unpublished values; 0004 TVOC as both names (Accepted); 0005 workspace; 0006 sim owns the air (Proposed); 0007 BACnet view first; 0008 condition effects.
+- **M5 generator:** `@vks/true-air-gen`: single-zone model stepped exactly every 5 s, CO2 from Persily & de Jonge (2017); JSON scenarios with one-off, repeating and daily events and device settings; eleven scenarios including shower, hand gel, four poorly ventilated weeks, power cycle and module swap, out of range, and step changes.
+- **ADRs:** 0001 time and cadence; 0002 bounded error and profiles; 0003 unpublished values; 0004 TVOC as both names (Accepted); 0005 workspace; 0006 sim owns the air (Proposed); 0007 BACnet view first; 0008 condition effects; 0009 generator model and scenarios.
 
 ## In progress
 
@@ -22,7 +23,7 @@ Nothing.
 
 ## Next
 
-- M5 synthetic true-air generator (test tool).
+- M6 CLI: generate, convert, report.
 
 ## Blockers
 

@@ -2,7 +2,7 @@
 
 **Purpose:** what could make the virtual sensor wrong, and what we are knowingly carrying.
 
-> Status: updated 2026-09-30 (end of M4).
+> Status: updated 2026-09-30 (end of M5).
 
 ## Open risks
 
@@ -57,6 +57,10 @@ Choices the evidence does not settle. Each is one place in `packages/core/src/fo
 - **Hourly windows at :15 (settled 2026-09-30).** The docs' hourly example looked misaligned with clock hours. S3 explains it: the example uses `time_zone=Asia/Kathmandu` (UTC+5:45), and "the hourly divisions happen on the hour in local time, which in UTC time is not 45 but 15 minutes after the hour". So windows are clock-aligned in the requested time zone, which is what the model does; a test reproduces the example's timestamps exactly. Nothing supports aligning to the request's `begin`, so there is no such option.
 - **History defaults and `limit` (settled 2026-09-30).** S3: `begin` defaults to 168 hours before `end`, `end` to now, and `limit` "retrieves only the latest N data points", with pagination only for results too large for one response. The first M4 version wrongly paginated whenever `limit` truncated; fixed.
 - **BACnet unit and reliability codes (settled 2026-09-30).** Verified against bacnet-stack and @bacnet-js/client (docs/02 S8, S9) and pinned by a test.
+
+## Generator assumptions (M5, ADR-0009)
+
+The generator is a test tool, so these only shape test data, never the sensor model: PM deposition 0.2/0.4/1.5 per h, 0.8 penetration, cooking size split, dust stirred up by moving people, TVOC from people 0.3 mg/h, hand gel evaporating in 2 minutes, O3 and NO2 indoor loss 2.8 and 0.5 per h, moisture 30–110 g/h per person, shower water rates, heating time constant 1 h, +0.25 °C per person. Door exchange is modelled as exchange with outdoor air. Only CO2 generation is from a published method (Persily & de Jonge 2017).
 
 ## Debt
 

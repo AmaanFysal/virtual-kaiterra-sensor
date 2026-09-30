@@ -23,6 +23,12 @@ Everything consulted on 2026-09-30, with what each gave us and how far it can be
 | bacnet-stack `src/bacnet/bacenum.h` (github.com/bacnet-stack/bacnet-stack, commit 8a655b665f65) | EngineeringUnits and Reliability codes |
 | @bacnet-js/client `src/lib/enum.ts` (github.com/bacnet-js/client, commit 27a399a00a70) | The same codes, cross-checked |
 
+## Generator
+
+| Source | Used for |
+|---|---|
+| Persily & de Jonge 2017, *Carbon Dioxide Generation Rates from Building Occupants*, Healthy Buildings 2017 Europe (NIST pub 922955), summarising *Indoor Air* 27(5) 868–879, doi:10.1111/ina.12383 | CO2 generation V = BMR·M·0.000484 L/s; Table 2 BMR by age and sex |
+
 ## Integration code
 
 | Source | Used for |

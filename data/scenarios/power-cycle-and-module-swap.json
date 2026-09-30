@@ -1,0 +1,55 @@
+{
+  "id": "power-cycle-and-module-swap",
+  "description": "The sensor in Room 1 loses power for 15 minutes, then both modules are swapped an hour apart (warm-up on).",
+  "start": "2026-11-03T09:00:00Z",
+  "durationMinutes": 360,
+  "room": {
+    "id": "Room1",
+    "floorAreaM2": 19,
+    "ceilingHeightM": 2.4,
+    "baseAch": 0.5
+  },
+  "timeline": [
+    {
+      "atMinutes": 0,
+      "type": "occupants",
+      "group": "resident",
+      "who": "resident",
+      "activity": "seated",
+      "count": 1
+    }
+  ],
+  "device": {
+    "conditions": {
+      "warmUp": {
+        "enabled": true
+      }
+    },
+    "moduleLifetimePct": [
+      6,
+      9
+    ],
+    "events": [
+      {
+        "atMinutes": 60,
+        "kind": "power",
+        "on": false
+      },
+      {
+        "atMinutes": 75,
+        "kind": "power",
+        "on": true
+      },
+      {
+        "atMinutes": 180,
+        "kind": "replace-module",
+        "bay": 0
+      },
+      {
+        "atMinutes": 240,
+        "kind": "replace-module",
+        "bay": 1
+      }
+    ]
+  }
+}

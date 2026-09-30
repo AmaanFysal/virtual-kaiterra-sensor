@@ -30,6 +30,12 @@ importers:
 
   packages/core: {}
 
+  packages/true-air-gen:
+    dependencies:
+      '@vks/core':
+        specifier: workspace:*
+        version: link:../core
+
 packages:
 
   '@esbuild/aix-ppc64@0.28.2':

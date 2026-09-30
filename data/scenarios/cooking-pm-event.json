@@ -1,0 +1,44 @@
+{
+  "id": "cooking-pm-event",
+  "description": "Lunch is plated and a batch of food fried at the Lounge servery for twenty minutes.",
+  "start": "2026-11-03T11:00:00Z",
+  "durationMinutes": 180,
+  "room": {
+    "id": "Lounge",
+    "floorAreaM2": 52.25,
+    "ceilingHeightM": 2.4,
+    "baseAch": 1.0
+  },
+  "timeline": [
+    {
+      "atMinutes": 0,
+      "type": "occupants",
+      "group": "residents",
+      "who": "resident",
+      "activity": "seated",
+      "count": 5
+    },
+    {
+      "atMinutes": 20,
+      "type": "occupants",
+      "group": "staff",
+      "who": "staff",
+      "activity": "care",
+      "count": 2
+    },
+    {
+      "atMinutes": 30,
+      "type": "cooking",
+      "minutes": 20,
+      "pm25MgPerMin": 3
+    },
+    {
+      "atMinutes": 90,
+      "type": "occupants",
+      "group": "staff",
+      "who": "staff",
+      "activity": "care",
+      "count": 0
+    }
+  ]
+}
