@@ -1,0 +1,57 @@
+{
+  "id": "step-changes",
+  "description": "Held step changes in every quantity, without jitter, to measure the sensor's response time against T90.",
+  "start": "2026-11-03T12:00:00Z",
+  "durationMinutes": 240,
+  "jitter": false,
+  "room": {
+    "id": "Room1",
+    "floorAreaM2": 19,
+    "ceilingHeightM": 2.4,
+    "baseAch": 0.5
+  },
+  "timeline": [
+    {
+      "atMinutes": 0,
+      "type": "set",
+      "hold": true,
+      "values": {
+        "co2": 500,
+        "pm1": 6,
+        "pm25": 10,
+        "pm10": 15,
+        "tvoc": 100,
+        "temp": 20,
+        "rh": 40
+      }
+    },
+    {
+      "atMinutes": 60,
+      "type": "set",
+      "hold": true,
+      "values": {
+        "co2": 2000,
+        "pm1": 150,
+        "pm25": 200,
+        "pm10": 260,
+        "tvoc": 800,
+        "temp": 26,
+        "rh": 70
+      }
+    },
+    {
+      "atMinutes": 150,
+      "type": "set",
+      "hold": true,
+      "values": {
+        "co2": 500,
+        "pm1": 6,
+        "pm25": 10,
+        "pm10": 15,
+        "tvoc": 100,
+        "temp": 20,
+        "rh": 40
+      }
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "deviceId": "5e200000-0000-4000-8000-000000000001",
+  "name": "Room 1",
+  "seed": "room1",
+  "variant": "pm-tvoc-co2",
+  "identity": { "location": "Room 1" }
+}

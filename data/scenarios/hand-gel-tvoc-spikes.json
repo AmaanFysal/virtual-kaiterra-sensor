@@ -1,0 +1,62 @@
+{
+  "id": "hand-gel-tvoc-spikes",
+  "description": "A carer visits Room 1 every hour and uses alcohol hand gel each time; the MOx TVOC sensor reads the ethanol (MOx effects on).",
+  "start": "2026-11-03T08:00:00Z",
+  "durationMinutes": 480,
+  "room": {
+    "id": "Room1",
+    "floorAreaM2": 19,
+    "ceilingHeightM": 2.4,
+    "baseAch": 0.5
+  },
+  "timeline": [
+    {
+      "atMinutes": 0,
+      "type": "occupants",
+      "group": "resident",
+      "who": "resident",
+      "activity": "seated",
+      "count": 1
+    },
+    {
+      "atMinutes": 20,
+      "type": "occupants",
+      "group": "staff",
+      "who": "staff",
+      "activity": "care",
+      "count": 1,
+      "repeat": {
+        "everyMinutes": 60,
+        "times": 8
+      }
+    },
+    {
+      "atMinutes": 20,
+      "type": "hand-gel",
+      "ethanolMg": 40,
+      "repeat": {
+        "everyMinutes": 60,
+        "times": 8
+      }
+    },
+    {
+      "atMinutes": 30,
+      "type": "occupants",
+      "group": "staff",
+      "who": "staff",
+      "activity": "care",
+      "count": 0,
+      "repeat": {
+        "everyMinutes": 60,
+        "times": 8
+      }
+    }
+  ],
+  "device": {
+    "conditions": {
+      "mox": {
+        "enabled": true
+      }
+    }
+  }
+}

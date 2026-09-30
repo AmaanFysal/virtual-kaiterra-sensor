@@ -1,0 +1,177 @@
+{
+  "scenario": "out-of-range-high",
+  "seed": "out-of-range-high",
+  "device": {
+    "deviceId": "5e200000-0000-4000-8000-000000000001",
+    "variant": "pm-tvoc-co2",
+    "seed": "out-of-range-high",
+    "specProfile": "looser",
+    "conditionsOn": [],
+    "moduleLifetimePct": [
+      100,
+      100
+    ]
+  },
+  "from": "2026-11-03T12:01:00Z",
+  "to": "2026-11-03T15:00:00Z",
+  "totals": {
+    "readings": 1260,
+    "healthy": 1200,
+    "healthyWithin": 1200,
+    "flagged": 60,
+    "backfilled": 0
+  },
+  "params": [
+    {
+      "param": "pm1",
+      "readings": 180,
+      "missing": 0,
+      "healthy": 175,
+      "healthyWithinShare": 1,
+      "withinShare": 0.988889,
+      "biasVsTruth": -7.41894,
+      "maeVsTruth": 7.42327,
+      "rmseVsTruth": 20.5575,
+      "maeVsReference": 7.42229,
+      "worstHealthyRatio": 0.553506,
+      "lagMinutes": 0,
+      "expectedLagMinutes": 0.0723824,
+      "flagCounts": {
+        "out-of-range": 5
+      }
+    },
+    {
+      "param": "pm25",
+      "readings": 180,
+      "missing": 0,
+      "healthy": 170,
+      "healthyWithinShare": 1,
+      "withinShare": 0.955556,
+      "biasVsTruth": -18.301,
+      "maeVsTruth": 18.301,
+      "rmseVsTruth": 65.7434,
+      "maeVsReference": 18.3003,
+      "worstHealthyRatio": 0.563718,
+      "lagMinutes": 0,
+      "expectedLagMinutes": 0.0723824,
+      "flagCounts": {
+        "out-of-range": 10
+      }
+    },
+    {
+      "param": "pm10",
+      "readings": 180,
+      "missing": 0,
+      "healthy": 170,
+      "healthyWithinShare": 1,
+      "withinShare": 0.961111,
+      "biasVsTruth": -15.5823,
+      "maeVsTruth": 25.2169,
+      "rmseVsTruth": 101.474,
+      "maeVsReference": 25.0126,
+      "worstHealthyRatio": 0.542279,
+      "lagMinutes": 0,
+      "expectedLagMinutes": 0.0723824,
+      "flagCounts": {
+        "out-of-range": 10
+      }
+    },
+    {
+      "param": "co2",
+      "readings": 180,
+      "missing": 0,
+      "healthy": 169,
+      "healthyWithinShare": 1,
+      "withinShare": 1,
+      "biasVsTruth": 12.5751,
+      "maeVsTruth": 67.3378,
+      "rmseVsTruth": 243.891,
+      "maeVsReference": 14.2667,
+      "worstHealthyRatio": 0.378549,
+      "lagMinutes": 1,
+      "expectedLagMinutes": 0.868589,
+      "flagCounts": {
+        "extended-range": 11
+      }
+    },
+    {
+      "param": "tvoc",
+      "readings": 180,
+      "missing": 0,
+      "healthy": 156,
+      "healthyWithinShare": 1,
+      "withinShare": 0.894444,
+      "biasVsTruth": -93.8239,
+      "maeVsTruth": 98.8951,
+      "rmseVsTruth": 309.369,
+      "maeVsReference": 94.7039,
+      "worstHealthyRatio": 0.342857,
+      "lagMinutes": 0,
+      "expectedLagMinutes": 0.434294,
+      "flagCounts": {
+        "out-of-range": 24
+      }
+    },
+    {
+      "param": "temp",
+      "readings": 180,
+      "missing": 0,
+      "healthy": 180,
+      "healthyWithinShare": 1,
+      "withinShare": 1,
+      "biasVsTruth": 0.0161111,
+      "maeVsTruth": 0.0267778,
+      "rmseVsTruth": 0.0338625,
+      "maeVsReference": 0.0267778,
+      "worstHealthyRatio": 0.3,
+      "lagMinutes": null,
+      "expectedLagMinutes": 4.34294,
+      "flagCounts": {}
+    },
+    {
+      "param": "rh",
+      "readings": 180,
+      "missing": 0,
+      "healthy": 180,
+      "healthyWithinShare": 1,
+      "withinShare": 1,
+      "biasVsTruth": -0.826696,
+      "maeVsTruth": 0.827645,
+      "rmseVsTruth": 0.885837,
+      "maeVsReference": 0.901727,
+      "worstHealthyRatio": 0.539214,
+      "lagMinutes": null,
+      "expectedLagMinutes": 2.17147,
+      "flagCounts": {}
+    }
+  ],
+  "flags": [
+    {
+      "flag": "out-of-range",
+      "params": [
+        "pm1",
+        "pm25",
+        "pm10",
+        "tvoc"
+      ],
+      "periods": 4,
+      "readings": 49,
+      "maxExcess": 1036.47,
+      "firstFrom": "2026-11-03T12:30:00Z",
+      "lastTo": "2026-11-03T14:24:00Z"
+    },
+    {
+      "flag": "extended-range",
+      "params": [
+        "co2"
+      ],
+      "periods": 1,
+      "readings": 11,
+      "maxExcess": 0,
+      "firstFrom": "2026-11-03T13:31:00Z",
+      "lastTo": "2026-11-03T13:42:00Z"
+    }
+  ],
+  "log": {},
+  "undelivered": 0
+}

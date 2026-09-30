@@ -1,0 +1,79 @@
+{
+  "id": "ensuite-shower-humid",
+  "description": "Assisted shower in the Room 1 en-suite with the fan off: humidity saturates and the PM sensor over-reads (PM humidity growth on).",
+  "start": "2026-11-03T07:00:00Z",
+  "durationMinutes": 120,
+  "room": {
+    "id": "Ensuite1",
+    "floorAreaM2": 3,
+    "ceilingHeightM": 2.4,
+    "baseAch": 1.0,
+    "doorOpenAch": 2.0,
+    "fanAch": 8
+  },
+  "initial": {
+    "doorOpen": false
+  },
+  "timeline": [
+    {
+      "atMinutes": 15,
+      "type": "occupants",
+      "group": "resident",
+      "who": "resident",
+      "activity": "care",
+      "count": 1
+    },
+    {
+      "atMinutes": 15,
+      "type": "occupants",
+      "group": "staff",
+      "who": "staff",
+      "activity": "care",
+      "count": 1
+    },
+    {
+      "atMinutes": 15,
+      "type": "shower",
+      "minutes": 12,
+      "waterGPerMin": 15
+    },
+    {
+      "atMinutes": 30,
+      "type": "occupants",
+      "group": "resident",
+      "who": "resident",
+      "activity": "care",
+      "count": 0
+    },
+    {
+      "atMinutes": 30,
+      "type": "occupants",
+      "group": "staff",
+      "who": "staff",
+      "activity": "care",
+      "count": 0
+    },
+    {
+      "atMinutes": 35,
+      "type": "fan",
+      "open": true
+    },
+    {
+      "atMinutes": 65,
+      "type": "fan",
+      "open": false
+    },
+    {
+      "atMinutes": 70,
+      "type": "door",
+      "open": true
+    }
+  ],
+  "device": {
+    "conditions": {
+      "pmHumidity": {
+        "enabled": true
+      }
+    }
+  }
+}

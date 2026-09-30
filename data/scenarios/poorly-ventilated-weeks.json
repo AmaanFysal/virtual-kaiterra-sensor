@@ -1,0 +1,87 @@
+{
+  "id": "poorly-ventilated-weeks",
+  "description": "Four weeks in a poorly ventilated Room 1 with the door mostly shut: CO2 never gets near outdoor levels, so NDIR automatic baseline calibration drifts low (ABC on).",
+  "start": "2026-11-03T00:00:00Z",
+  "durationMinutes": 40320,
+  "sampleIntervalS": 300,
+  "room": {
+    "id": "Room1",
+    "floorAreaM2": 19,
+    "ceilingHeightM": 2.4,
+    "baseAch": 0.2,
+    "doorOpenAch": 0.8
+  },
+  "initial": {
+    "doorOpen": false,
+    "air": {
+      "co2": 1200
+    }
+  },
+  "timeline": [
+    {
+      "atMinutes": 0,
+      "type": "occupants",
+      "group": "resident",
+      "who": "resident",
+      "activity": "sleeping",
+      "count": 1
+    }
+  ],
+  "daily": [
+    {
+      "at": "07:00",
+      "type": "occupants",
+      "group": "resident",
+      "who": "resident",
+      "activity": "seated",
+      "count": 1
+    },
+    {
+      "at": "08:00",
+      "type": "occupants",
+      "group": "staff",
+      "who": "staff",
+      "activity": "care",
+      "count": 1
+    },
+    {
+      "at": "08:20",
+      "type": "occupants",
+      "group": "staff",
+      "who": "staff",
+      "activity": "care",
+      "count": 0
+    },
+    {
+      "at": "12:00",
+      "type": "occupants",
+      "group": "resident",
+      "who": "resident",
+      "activity": "seated",
+      "count": 0
+    },
+    {
+      "at": "14:00",
+      "type": "occupants",
+      "group": "resident",
+      "who": "resident",
+      "activity": "seated",
+      "count": 1
+    },
+    {
+      "at": "21:30",
+      "type": "occupants",
+      "group": "resident",
+      "who": "resident",
+      "activity": "sleeping",
+      "count": 1
+    }
+  ],
+  "device": {
+    "conditions": {
+      "abc": {
+        "enabled": true
+      }
+    }
+  }
+}

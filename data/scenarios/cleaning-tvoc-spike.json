@@ -1,0 +1,46 @@
+{
+  "id": "cleaning-tvoc-spike",
+  "description": "A carer cleans Room 1 with a spray cleaner for ten minutes, then the window is opened for half an hour.",
+  "start": "2026-11-03T10:00:00Z",
+  "durationMinutes": 180,
+  "room": {
+    "id": "Room1",
+    "floorAreaM2": 19,
+    "ceilingHeightM": 2.4,
+    "baseAch": 0.5
+  },
+  "timeline": [
+    {
+      "atMinutes": 30,
+      "type": "occupants",
+      "group": "staff",
+      "who": "staff",
+      "activity": "light",
+      "count": 1
+    },
+    {
+      "atMinutes": 30,
+      "type": "cleaning",
+      "minutes": 10,
+      "tvocMgPerMin": 8
+    },
+    {
+      "atMinutes": 40,
+      "type": "occupants",
+      "group": "staff",
+      "who": "staff",
+      "activity": "light",
+      "count": 0
+    },
+    {
+      "atMinutes": 60,
+      "type": "window",
+      "open": true
+    },
+    {
+      "atMinutes": 90,
+      "type": "window",
+      "open": false
+    }
+  ]
+}

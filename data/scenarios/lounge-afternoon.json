@@ -1,0 +1,68 @@
+{
+  "id": "lounge-afternoon",
+  "description": "The Lounge after lunch: residents and staff, family visitors from 14:00, tea and toast at 15:00.",
+  "start": "2026-11-03T12:00:00Z",
+  "durationMinutes": 360,
+  "room": {
+    "id": "Lounge",
+    "floorAreaM2": 52.25,
+    "ceilingHeightM": 2.4,
+    "baseAch": 1.0
+  },
+  "timeline": [
+    {
+      "atMinutes": 0,
+      "type": "occupants",
+      "group": "residents",
+      "who": "resident",
+      "activity": "seated",
+      "count": 4
+    },
+    {
+      "atMinutes": 0,
+      "type": "occupants",
+      "group": "staff",
+      "who": "staff",
+      "activity": "light",
+      "count": 2
+    },
+    {
+      "atMinutes": 60,
+      "type": "occupants",
+      "group": "residents",
+      "who": "resident",
+      "activity": "seated",
+      "count": 6
+    },
+    {
+      "atMinutes": 120,
+      "type": "occupants",
+      "group": "visitors",
+      "who": "visitor",
+      "activity": "seated",
+      "count": 3
+    },
+    {
+      "atMinutes": 180,
+      "type": "cooking",
+      "minutes": 10,
+      "pm25MgPerMin": 0.5
+    },
+    {
+      "atMinutes": 240,
+      "type": "occupants",
+      "group": "visitors",
+      "who": "visitor",
+      "activity": "seated",
+      "count": 0
+    },
+    {
+      "atMinutes": 300,
+      "type": "occupants",
+      "group": "residents",
+      "who": "resident",
+      "activity": "seated",
+      "count": 2
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "id": "door-closed-co2-rise",
+  "description": "Two visitors with a resident in Room 1; the door is shut for three hours and CO2 climbs.",
+  "start": "2026-11-03T14:00:00Z",
+  "durationMinutes": 300,
+  "room": {
+    "id": "Room1",
+    "floorAreaM2": 19,
+    "ceilingHeightM": 2.4,
+    "baseAch": 0.5
+  },
+  "timeline": [
+    {
+      "atMinutes": 0,
+      "type": "occupants",
+      "group": "resident",
+      "who": "resident",
+      "activity": "seated",
+      "count": 1
+    },
+    {
+      "atMinutes": 0,
+      "type": "occupants",
+      "group": "visitors",
+      "who": "visitor",
+      "activity": "seated",
+      "count": 2
+    },
+    {
+      "atMinutes": 30,
+      "type": "door",
+      "open": false
+    },
+    {
+      "atMinutes": 210,
+      "type": "door",
+      "open": true
+    },
+    {
+      "atMinutes": 240,
+      "type": "occupants",
+      "group": "visitors",
+      "who": "visitor",
+      "activity": "seated",
+      "count": 0
+    }
+  ]
+}

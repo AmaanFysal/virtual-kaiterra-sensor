@@ -1,0 +1,180 @@
+{
+  "scenario": "power-cycle-and-module-swap",
+  "seed": "power-cycle-and-module-swap",
+  "device": {
+    "deviceId": "5e200000-0000-4000-8000-000000000001",
+    "variant": "pm-tvoc-co2",
+    "seed": "power-cycle-and-module-swap",
+    "specProfile": "looser",
+    "conditionsOn": [
+      "warmUp"
+    ],
+    "moduleLifetimePct": [
+      6,
+      9
+    ]
+  },
+  "from": "2026-11-03T09:01:00Z",
+  "to": "2026-11-03T15:00:00Z",
+  "totals": {
+    "readings": 2415,
+    "healthy": 2252,
+    "healthyWithin": 2252,
+    "flagged": 163,
+    "backfilled": 0
+  },
+  "params": [
+    {
+      "param": "pm1",
+      "readings": 345,
+      "missing": 15,
+      "healthy": 342,
+      "healthyWithinShare": 1,
+      "withinShare": 0.997101,
+      "biasVsTruth": -0.215513,
+      "maeVsTruth": 0.575968,
+      "rmseVsTruth": 0.679354,
+      "maeVsReference": 0.575992,
+      "worstHealthyRatio": 0.559173,
+      "lagMinutes": null,
+      "expectedLagMinutes": 0.0723824,
+      "flagCounts": {
+        "warm-up": 3
+      }
+    },
+    {
+      "param": "pm25",
+      "readings": 345,
+      "missing": 15,
+      "healthy": 342,
+      "healthyWithinShare": 1,
+      "withinShare": 0.997101,
+      "biasVsTruth": -0.509632,
+      "maeVsTruth": 0.543944,
+      "rmseVsTruth": 0.652391,
+      "maeVsReference": 0.544084,
+      "worstHealthyRatio": 0.466164,
+      "lagMinutes": null,
+      "expectedLagMinutes": 0.0723824,
+      "flagCounts": {
+        "warm-up": 3
+      }
+    },
+    {
+      "param": "pm10",
+      "readings": 345,
+      "missing": 15,
+      "healthy": 342,
+      "healthyWithinShare": 1,
+      "withinShare": 0.997101,
+      "biasVsTruth": -1.13592,
+      "maeVsTruth": 1.13592,
+      "rmseVsTruth": 1.21237,
+      "maeVsReference": 1.13606,
+      "worstHealthyRatio": 0.659681,
+      "lagMinutes": null,
+      "expectedLagMinutes": 0.0723824,
+      "flagCounts": {
+        "warm-up": 3
+      }
+    },
+    {
+      "param": "co2",
+      "readings": 345,
+      "missing": 15,
+      "healthy": 342,
+      "healthyWithinShare": 1,
+      "withinShare": 1,
+      "biasVsTruth": 18.5619,
+      "maeVsTruth": 18.6751,
+      "rmseVsTruth": 19.5108,
+      "maeVsReference": 18.9472,
+      "worstHealthyRatio": 0.582753,
+      "lagMinutes": null,
+      "expectedLagMinutes": 0.868589,
+      "flagCounts": {
+        "warm-up": 3
+      }
+    },
+    {
+      "param": "tvoc",
+      "readings": 345,
+      "missing": 15,
+      "healthy": 224,
+      "healthyWithinShare": 1,
+      "withinShare": 1,
+      "biasVsTruth": 1.33459,
+      "maeVsTruth": 2.41384,
+      "rmseVsTruth": 2.79989,
+      "maeVsReference": 2.41465,
+      "worstHealthyRatio": 0.685105,
+      "lagMinutes": null,
+      "expectedLagMinutes": 0.434294,
+      "flagCounts": {
+        "warm-up": 121
+      }
+    },
+    {
+      "param": "temp",
+      "readings": 345,
+      "missing": 15,
+      "healthy": 330,
+      "healthyWithinShare": 1,
+      "withinShare": 0.994203,
+      "biasVsTruth": 0.0170407,
+      "maeVsTruth": 0.0354571,
+      "rmseVsTruth": 0.0510376,
+      "maeVsReference": 0.0369578,
+      "worstHealthyRatio": 0.337492,
+      "lagMinutes": null,
+      "expectedLagMinutes": 4.34294,
+      "flagCounts": {
+        "warm-up": 15
+      }
+    },
+    {
+      "param": "rh",
+      "readings": 345,
+      "missing": 15,
+      "healthy": 330,
+      "healthyWithinShare": 1,
+      "withinShare": 1,
+      "biasVsTruth": -1.10669,
+      "maeVsTruth": 1.12054,
+      "rmseVsTruth": 1.16114,
+      "maeVsReference": 1.17353,
+      "worstHealthyRatio": 0.640467,
+      "lagMinutes": null,
+      "expectedLagMinutes": 2.17147,
+      "flagCounts": {
+        "warm-up": 15
+      }
+    }
+  ],
+  "flags": [
+    {
+      "flag": "warm-up",
+      "params": [
+        "pm1",
+        "pm25",
+        "pm10",
+        "co2",
+        "tvoc",
+        "temp",
+        "rh"
+      ],
+      "periods": 11,
+      "readings": 163,
+      "maxExcess": 2.47883,
+      "firstFrom": "2026-11-03T10:15:00Z",
+      "lastTo": "2026-11-03T14:00:00Z"
+    }
+  ],
+  "log": {
+    "power-off": 1,
+    "power-on": 1,
+    "no-input": 7,
+    "module-replaced": 2
+  },
+  "undelivered": 0
+}

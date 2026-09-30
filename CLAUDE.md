@@ -14,15 +14,20 @@ This file is an index. Details live in `docs/`; read the relevant doc before wor
 - `pnpm typecheck`: typecheck every package
 - `pnpm test`: run Vitest across the repo (unit, property, golden, determinism guard, fixture checks)
 - `pnpm vks fixtures:fetch`: replace the provisional API fixtures with live ones (needs `KAITERRA_API_KEY` in `.env`; does nothing without it)
+- `pnpm vks scenarios` / `generate --scenario <id>` / `convert --scenario <id> --format kaiterra-top`: run the generator and the virtual device from the command line (docs/06); `pnpm -s vks …` for clean piped output
+- `pnpm vks report --all`: regenerate the validation reports in `docs/workstreams/v1-standalone-sensor/reports/`. Markdown and `.stats.json` are committed (a test fails if they are stale); HTML is gitignored and a CI artifact
 - `pnpm vks help`: CLI usage
 
 ## Layout
 
 - `packages/core` (`@vks/core`): the pure, deterministic sensor model: time, RNG, spec table, device, validation, and the output formats (Kaiterra API router, MQTT, BACnet view, CSV); no I/O
-- `apps/cli` (`@vks/cli`): the I/O shell (files, `.env`, network for `fixtures:fetch`)
+- `apps/cli` (`@vks/cli`): the I/O shell: `scenarios`, `generate`, `convert`, `report`, `fixtures:fetch` (files, `.env`, network)
+- `data/devices/`: example device configs
 - `test/fixtures/kaiterra-api/`: provisional API and MQTT fixtures with provenance sidecars
 - `docs/`: numbered design docs, ADRs, research notes, workstreams
-- Planned: `packages/true-air-gen` (M5), `apps/server` (M8), plug-in adapter (M9)
+- `packages/true-air-gen` (`@vks/true-air-gen`): synthetic true-air scenarios for standalone testing (a test tool, not the sim's air model)
+- `data/scenarios/`: the scenario files
+- Planned: `apps/server` (M8). The plug-in adapter (M9) is on hold until the care home's plug-in API contract exists (docs/09)
 
 ## Key facts
 
@@ -51,11 +56,11 @@ This file is an index. Details live in `docs/`; read the relevant doc before wor
 | Packages, dependencies, tooling, CI | `docs/01-system-and-repo.md` |
 | Kaiterra specs, API, BACnet, MQTT, citations | `docs/02-sensedge-mini-reference.md` |
 | Sampling, lag, error model, lifecycle, conditions | `docs/03-sensor-model.md` |
-| True-air input and the synthetic generator | `docs/04-true-air-and-generator.md` |
+| True-air input, the synthetic generator, scenarios | `docs/04-true-air-and-generator.md` |
 | Kaiterra API JSON, MQTT, BACnet view, CSV | `docs/05-output-formats.md` |
 | CLI and the Kaiterra-compatible server | `docs/06-cli-and-server.md` |
 | Care home plug-in interface | `docs/07-plugin-interface.md` |
-| Tests, invariants, validation report | `docs/08-testing-and-validation.md` |
+| Tests, invariants, validation reports | `docs/08-testing-and-validation.md` (reports: `docs/workstreams/v1-standalone-sensor/reports/`) |
 | Risks, assumptions, open questions | `docs/09-risks-and-debt.md` |
 | Current work | `docs/workstreams/v1-standalone-sensor/` |
 
@@ -73,4 +78,4 @@ Significant decisions get an ADR (`docs/adr/0000-template.md`). Don't start work
 
 ## Skills
 
-`pre-pr`, `new-parameter`, `new-condition-effect`, `new-output-format`, and `/refresh-fixtures` (manual only).
+`pre-pr`, `new-parameter`, `new-condition-effect`, `new-output-format`, `new-scenario`, and `/refresh-fixtures` (manual only).
