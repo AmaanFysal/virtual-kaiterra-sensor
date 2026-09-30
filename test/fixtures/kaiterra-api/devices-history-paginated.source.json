@@ -1,0 +1,7 @@
+{
+  "provenance": "from docs",
+  "url": "https://dev.kaiterra.com",
+  "retrieved": "2026-09-30",
+  "provisional": true,
+  "note": "Paginated history example with `_links.next`."
+}

@@ -1,0 +1,7 @@
+{
+  "provenance": "from integration code",
+  "url": "https://github.com/kaiterra/api/blob/master/examples/restv1-apikey.py",
+  "retrieved": "2026-09-30",
+  "provisional": true,
+  "note": "Legacy GET /v1/sensedges/{id} shape: `latest` with module-prefixed keys. Keys from Kaiterra's own example script and InnerCore.Api.Kaiterra's SenseEdgeData model (https://github.com/MadMonkey87/InnerCore.Api.Kaiterra); values are copied from the batch example, not a real response."
+}

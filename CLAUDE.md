@@ -13,12 +13,16 @@ This file is an index. Details live in `docs/`; read the relevant doc before wor
 - `pnpm install`: install workspace dependencies (Node 22.13+, pnpm 9); also points git at `.githooks/`
 - `pnpm typecheck`: typecheck every package
 - `pnpm test`: run Vitest across the repo (unit, property, golden, determinism guard, fixture checks)
+- `pnpm vks fixtures:fetch`: replace the provisional API fixtures with live ones (needs `KAITERRA_API_KEY` in `.env`; does nothing without it)
+- `pnpm vks help`: CLI usage
 
 ## Layout
 
-- `packages/core` (`@vks/core`): the pure, deterministic sensor model (no I/O); only the seeded RNG so far
+- `packages/core` (`@vks/core`): the pure, deterministic sensor model: time, RNG, spec table, device, validation, and the output formats (Kaiterra API router, MQTT, BACnet view, CSV); no I/O
+- `apps/cli` (`@vks/cli`): the I/O shell (files, `.env`, network for `fixtures:fetch`)
+- `test/fixtures/kaiterra-api/`: provisional API and MQTT fixtures with provenance sidecars
 - `docs/`: numbered design docs, ADRs, research notes, workstreams
-- Planned: `apps/cli` (M1, M6), `packages/true-air-gen` (M5), `apps/server` (M8), plug-in adapter (M9)
+- Planned: `packages/true-air-gen` (M5), `apps/server` (M8), plug-in adapter (M9)
 
 ## Key facts
 
@@ -27,6 +31,8 @@ This file is an index. Details live in `docs/`; read the relevant doc before wor
 - Error = bias + drift + noise, each a share of the spec envelope, so healthy readings are always within spec of the lagged true value (ADR-0002). Default spec profile: `looser`.
 - Condition effects (PM humidity, MOx cross-sensitivity, NDIR ABC, warm-up) and outliers are off by default and flag what they touch (ADR-0008).
 - The care home sim will own the air model; this sensor only measures the true air it is given (ADR-0006).
+- Formats show a reading only once delivered; TVOC is reported as both `tvoc` and `rtvoc` (ADR-0004); the side channel never leaves the core's `Reading` (docs/05).
+- API fixtures are provisional (from docs and integration code); the output format is unverified against a live API, and the format guesses are listed in docs/09.
 
 ## Non-negotiables (full text: docs/00-constitution.md)
 
@@ -67,4 +73,4 @@ Significant decisions get an ADR (`docs/adr/0000-template.md`). Don't start work
 
 ## Skills
 
-`pre-pr`.
+`pre-pr`, `new-parameter`, `new-condition-effect`, `new-output-format`, and `/refresh-fixtures` (manual only).

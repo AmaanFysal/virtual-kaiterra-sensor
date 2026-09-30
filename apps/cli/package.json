@@ -1,0 +1,19 @@
+{
+  "name": "@vks/cli",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "vks": "tsx src/main.ts"
+  },
+  "dependencies": {
+    "@vks/core": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.15"
+  }
+}

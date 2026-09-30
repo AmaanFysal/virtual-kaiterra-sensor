@@ -1,0 +1,4 @@
+[
+  { "method": "GET", "relative_url": "/devices/00000000-0001-0101-0000-00007e57c0de/top" },
+  { "method": "GET", "relative_url": "/devices/00000000-0031-0001-0000-00007e57c0de/top" }
+]

@@ -1,0 +1,7 @@
+{
+  "provenance": "from docs",
+  "url": "https://dev.kaiterra.com",
+  "retrieved": "2026-09-30",
+  "provisional": true,
+  "note": "GET /v1/devices/{id} example (API version 2025-02-26). The test device is a Sensedge SE-100, not a Mini: module types KM-100/KM-103."
+}
