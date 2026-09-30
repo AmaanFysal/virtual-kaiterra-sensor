@@ -13,7 +13,8 @@ description: Use when finishing a work session, before committing, or before ope
    - Anything new that can leave the spec envelope flags the readings it touches, and is off by default.
    - No side-channel field (`reference`, `truth`, `envelope`, `flags`, `deliveredAt`) appears in an output format.
    - `git grep -n KAITERRA_API_KEY` shows no value, and no fixture contains `key=` other than `key=REDACTED`.
-3. Run `sh .githooks/check-doc-attribution.sh`: no doc may credit Claude. Fix any it finds; normal mentions of Claude or CLAUDE.md are fine.
-4. Update the numbered doc(s) in `docs/` affected by this change so they match the code. Record significant decisions as an ADR from `docs/adr/0000-template.md`.
-5. Update the workstream's `PROGRESS.md` (done, in progress, next, blockers, session log row).
-6. Summarise for the user: what changed, checks run and results, docs updated.
+3. If a number moved (model, generator, scenarios, report), run `pnpm vks report --all` and commit the regenerated reports; the report test fails otherwise.
+4. Run `sh .githooks/check-doc-attribution.sh`: no doc may credit Claude. Fix any it finds; normal mentions of Claude or CLAUDE.md are fine.
+5. Update the numbered doc(s) in `docs/` affected by this change so they match the code. Record significant decisions as an ADR from `docs/adr/0000-template.md`.
+6. Update the workstream's `PROGRESS.md` (done, in progress, next, blockers, session log row).
+7. Summarise for the user: what changed, checks run and results, docs updated.

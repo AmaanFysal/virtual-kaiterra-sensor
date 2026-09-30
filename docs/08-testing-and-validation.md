@@ -2,7 +2,7 @@
 
 **Purpose:** what the tests prove, the invariants they hold, and the planned validation report.
 
-> Status: M0–M6 tests built (2026-09-30): 197 tests. Report planned (M7).
+> Status: M0–M7 built (2026-09-30): 210 tests; validation reports in `docs/workstreams/v1-standalone-sensor/reports/`.
 
 ## Test files
 
@@ -17,6 +17,8 @@
 | `packages/core/test/formats.test.ts` | M4: API `top`, `history` (raw, hourly, open hour left out, `limit` as latest-N, pagination without gaps, BST day windows, Kaiterra's Kathmandu :15 example reproduced), `devices/{id}` and `batch` match the fixtures' shapes and the delivered readings; errors; MQTT Formats 1/2 match the guide, backfill published on reconnect; BACnet objects per the PICS with verified unit and reliability codes; CSV equals the API's averages; no side channel in any format |
 | `packages/true-air-gen/test/generate.test.ts` | M5: all eleven scenarios valid and plausible; CO2 steady state and first-order rise against the closed form (Persily & de Jonge rates); decay at ventilation plus deposition; each scenario makes its point; timeline expansion; validation errors; determinism and golden hashes; every scenario through the default device stays in spec |
 | `apps/cli/test/cli.test.ts` | M6: true-air CSV/JSONL round trips and errors with line numbers; `scenarios`, `generate` (reproducible), `convert` to every format; scenario device settings, `--seed`, device-file events, `--as-of` delivery; usage errors and exit codes |
+| `packages/core/test/report.test.ts` | M7: in-spec shares, errors and missing intervals; flagged minutes merged into periods with their excess; lag near τ on a step; lag blank on flat air; device log counts |
+| `apps/cli/test/report.test.ts` | M7: HTML and Markdown written; a section per condition effect; deterministic; **committed reports equal a fresh `report --all`**; escaping; chart bucketing with gaps; device events as spans |
 | `apps/cli/test/fixtures.test.ts` | Every fixture has a provenance sidecar and no key, and matches the documented API/MQTT shapes |
 | `apps/cli/test/fixtures-fetch.test.ts` | `fixtures:fetch` skips without a key; with one it never logs or saves it (raw or URL-encoded), even when the API echoes it back |
 
@@ -33,4 +35,20 @@ Health flags: `out-of-range`, `extended-range`, `module-expired`, `calibration-o
 
 ## Validation report (M7)
 
-Per parameter: bias, MAE, RMSE, largest error, % within envelope (healthy and overall), estimated lag, overlay charts of true, reference and sensed values; a section per condition effect with its flagged periods shaded. Saved to `docs/workstreams/v1-standalone-sensor/reports/`.
+`pnpm vks report --scenario <id>` (or `--all`) runs a scenario's true air through the device with the scenario's device settings. It writes `<id>.html` (charts) and `<id>.md` to `docs/workstreams/v1-standalone-sensor/reports/`, plus a `README.md` index for `--all`. Reports are deterministic, and a test fails when the committed ones differ from what the code generates, so regenerate them with `pnpm vks report --all` after any change that moves a number.
+
+Each report has:
+
+- **Header:** the scenario, the device (variant, seed, spec profile, condition effects on, module health, device log counts, undelivered readings), and headline tiles led by the share of healthy readings within the envelope.
+- **Accuracy by parameter:** readings; missing intervals; healthy and all readings within the envelope; bias, MAE and RMSE against the truth; MAE against the reference; the worst healthy error as a share of E; the measured lag next to the expected τ = T90/ln 10.
+- **Flags and condition effects:** one section per flag with what it means, the parameters, and the flagged periods with their mean and largest excess beyond the envelope.
+- **Charts, one per parameter:**
+  - sensed, true and reference lines, with the envelope as a wash around the reference;
+  - flagged periods shaded, and scenario and device events (door, window, fan, cooking, cleaning, shower, hand gel, power cuts, outages, module swaps) in lanes above the plot;
+  - a crosshair tooltip (mouse or arrow keys) and a data table.
+  - Built with the dataviz method: one y-axis; the first three categorical slots, validated for all pairs in light and dark; light and dark themes; no horizontal scroll at phone width.
+- **Scenario timeline and method notes.**
+
+Definitions: the reference is the interval mean of the lagged true value (the target of the spec), the truth is the unlagged mean, and E is the envelope at the reference. The lag is the whole-minute shift of the truth, up to 30, that best matches the healthy readings; it is left blank when the truth moves less than the typical envelope. Runs longer than 360 minutes are averaged into buckets for the charts only; the statistics use every reading.
+
+Current results (`reports/README.md`): every scenario has 100% of healthy readings within the envelope. The condition-effect scenarios flag exactly the effects they switch on. On `step-changes` the measured lags match τ: temperature 3 min against 4.3, humidity 2 against 2.2, CO2 1 against 0.9.

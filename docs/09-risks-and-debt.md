@@ -2,7 +2,7 @@
 
 **Purpose:** what could make the virtual sensor wrong, and what we are knowingly carrying.
 
-> Status: updated 2026-09-30 (end of M5).
+> Status: updated 2026-09-30 (end of M7).
 
 ## Open risks
 
@@ -61,6 +61,12 @@ Choices the evidence does not settle. Each is one place in `packages/core/src/fo
 ## Generator assumptions (M5, ADR-0009)
 
 The generator is a test tool, so these only shape test data, never the sensor model: PM deposition 0.2/0.4/1.5 per h, 0.8 penetration, cooking size split, dust stirred up by moving people, TVOC from people 0.3 mg/h, hand gel evaporating in 2 minutes, O3 and NO2 indoor loss 2.8 and 0.5 per h, moisture 30–110 g/h per person, shower water rates, heating time constant 1 h, +0.25 °C per person. Door exchange is modelled as exchange with outdoor air. Only CO2 generation is from a published method (Persily & de Jonge 2017).
+
+## Report limits (M7)
+
+- Lag is measured in whole minutes (the reporting interval), so it cannot resolve PM's 10 s response; it is blank when the truth barely moves.
+- Charts of runs longer than 6 hours show bucket means, which hide single-minute spikes such as outliers. The statistics and flag tables use every reading.
+- The committed reports are about 2.7 MB of HTML in total. The staleness test keeps them honest, but any change that moves a number means regenerating them.
 
 ## Debt
 

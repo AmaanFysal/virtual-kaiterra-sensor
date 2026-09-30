@@ -2,7 +2,7 @@
 
 **Purpose:** the two ways to run the virtual sensor outside the care home: files in and out (CLI), and a Kaiterra-compatible HTTP API (server).
 
-> Status: CLI built (M1 `fixtures:fetch`, M6 `scenarios`, `generate`, `convert`; M7 `report`); server planned (M8).
+> Status: CLI built (M1 `fixtures:fetch`; M6 `scenarios`, `generate`, `convert`; M7 `report`); server planned (M8).
 
 ## CLI (`pnpm vks <command>`)
 
@@ -13,7 +13,7 @@ The CLI is the only place that reads files, the environment or the wall clock. R
 | `scenarios` | Lists `data/scenarios` with room, length and description |
 | `generate --scenario <id\|path> [--seed S] [--out f.csv\|f.jsonl] [--format csv\|jsonl]` | Runs the generator; the seed defaults to the scenario id |
 | `convert (--input <true-air file> \| --scenario <id\|path>) [--device <config.json>] [--seed S] [--as-of T] [--format F] [--out f]` | Runs the virtual device over the true air and writes format F |
-| `report …` | True vs sensed validation report (M7, docs/08) |
+| `report --scenario <id\|path> [--seed S] [--device f] [--out-dir d]` or `report --all` | True vs sensed validation report, HTML with charts and Markdown (docs/08); `--all` writes every scenario and an index to `docs/workstreams/v1-standalone-sensor/reports/` |
 | `fixtures:fetch` | Replaces the provisional API fixtures with live ones when `KAITERRA_API_KEY` is set (M1). Without a key it prints how to add one and exits 0; with one, the key is redacted from every log line and saved file. |
 
 `convert` formats:

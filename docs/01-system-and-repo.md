@@ -2,7 +2,7 @@
 
 **Purpose:** how the repo is laid out, what each package may depend on, and the tooling around it.
 
-> Status: M0–M6 built (2026-09-30). Source: the approved plan in `docs/workstreams/v1-standalone-sensor/plan.md`; conventions copied from virtual-care-home.
+> Status: M0–M7 built (2026-09-30). Source: the approved plan in `docs/workstreams/v1-standalone-sensor/plan.md`; conventions copied from virtual-care-home.
 
 ## Packages
 
