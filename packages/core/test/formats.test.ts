@@ -140,20 +140,53 @@ describe("GET /devices/{id}/history", () => {
     expect(data[0]!.points.at(-1)!.ts).toBe(formatIso(T0 + 5 * HOUR));
   });
 
-  it("pages backwards with _links.next and loses no points", () => {
-    const first = get(`/devices/${UDID}/history?begin=${formatIso(T0)}&end=${formatIso(T0 + HOUR)}&limit=25`);
-    const body = first.body as { _links?: { next: string }; data: ApiSeries[] };
-    expect(Object.keys(body)).toEqual(Object.keys(fixture("devices-history-paginated")));
-    expect(body._links!.next).toMatch(new RegExp(`^https://api\\.kaiterra\\.com/v1/devices/${UDID}/history\\?begin=.+%3A.+&end=`));
+  it("limit returns only the latest N points, with no next link (S3)", () => {
+    const body = get(`/devices/${UDID}/history?begin=${formatIso(T0)}&end=${formatIso(T0 + HOUR)}&limit=25`).body as { _links?: unknown; data: ApiSeries[] };
+    expect(body._links).toBeUndefined();
+    const co2 = body.data.find((s) => s.param === "rco2")!;
+    expect(co2.points.map((p) => p.ts)).toEqual(minutes("co2").filter((r) => r.ts >= T0 && r.ts <= T0 + HOUR).slice(-25).map((r) => formatIso(r.ts)));
+  });
+
+  it("defaults to the week before end, as documented (S3)", () => {
+    const co2 = (get(`/devices/${UDID}/history`).body as { data: ApiSeries[] }).data.find((s) => s.param === "rco2")!;
+    expect(co2.points).toHaveLength(minutes("co2").length);
+  });
+
+  it("paginates results too large for one response backwards with _links.next, losing no points", () => {
+    const big = run(undefined, 30 * 60);
+    const all = big.result.readings.filter((r) => r.param === "co2");
+    const first = big.get(`/devices/${UDID}/history`).body as { _links?: { next: string }; data: ApiSeries[] };
+    expect(Object.keys(first)).toEqual(Object.keys(fixture("devices-history-paginated")));
+    expect(first.data.find((s) => s.param === "rco2")!.points).toHaveLength(1440);
+    expect(first._links!.next).toMatch(new RegExp(`^https://api\\.kaiterra\\.com/v1/devices/${UDID}/history\\?begin=.+%3A.+&end=`));
     const collected: string[] = [];
-    let page: { _links?: { next: string }; data: ApiSeries[] } = body;
-    for (let i = 0; i < 10; i++) {
+    let page = first;
+    for (let i = 0; i < 5; i++) {
       collected.unshift(...page.data.find((s) => s.param === "rco2")!.points.map((p) => p.ts));
       if (!page._links) break;
-      const next = page._links.next.replace("https://api.kaiterra.com/v1", "");
-      page = get(next).body as typeof page;
+      page = big.get(page._links.next.replace("https://api.kaiterra.com/v1", "")).body as typeof page;
     }
-    expect(collected).toEqual(minutes("co2").filter((r) => r.ts >= T0 && r.ts <= T0 + HOUR).map((r) => formatIso(r.ts)));
+    expect(collected).toEqual(all.map((r) => formatIso(r.ts)));
+  });
+
+  it("paginates a large limit and stops at N points", () => {
+    const big = run(undefined, 30 * 60);
+    const all = big.result.readings.filter((r) => r.param === "co2");
+    const first = big.get(`/devices/${UDID}/history?limit=1500`).body as { _links?: { next: string }; data: ApiSeries[] };
+    expect(first._links!.next).toContain("limit=60");
+    const second = big.get(first._links!.next.replace("https://api.kaiterra.com/v1", "")).body as { _links?: unknown; data: ApiSeries[] };
+    expect(second._links).toBeUndefined();
+    const ts = [...second.data.find((s) => s.param === "rco2")!.points, ...first.data.find((s) => s.param === "rco2")!.points].map((p) => p.ts);
+    expect(ts).toEqual(all.slice(-1500).map((r) => formatIso(r.ts)));
+  });
+
+  it("reproduces Kaiterra's hourly example: on the hour in local time, so :15 UTC in Asia/Kathmandu (S3)", () => {
+    const t0 = parseIso("2020-06-17T00:00:00Z");
+    const ktm = simulate({ deviceId: UDID, seed: "ktm", params: ["pm25"] }, steady(TYPICAL, 7 * 60, 60, t0));
+    const c: ApiContext = { devices: [{ config: ktm.config, readings: ktm.readings, status: ktm.status }], asOf: parseIso("2020-06-17T06:40:00Z") };
+    const pm = (kaiterraApi(c, { method: "GET", path: `/devices/${UDID}/history?group_by=1h&time_zone=Asia/Kathmandu&limit=5&key=k` }).body as { data: ApiSeries[] }).data[0]!;
+    expect(pm.span).toBe(3600);
+    expect(pm.points.map((p) => p.ts)).toEqual(fixture("devices-history-1h").data[0].points.map((p: { ts: string }) => p.ts));
   });
 
   it("aligns days to the time zone, including British Summer Time", () => {
@@ -303,6 +336,20 @@ describe("BACnet object view (S4)", () => {
     expect(obj(3)).toMatchObject({ reliability: "unreliable-other", statusFlags: { fault: true } });
     expect(obj(9).presentValue).toBe(result.status.modules[1]!.lifetimePct);
     expect(obj(7).reliability).toBe("no-sensor");
+  });
+
+  it("uses the BACnet enumeration numbers verified in bacnet-stack and @bacnet-js/client", async () => {
+    const { UNITS, RELIABILITY_IDS } = await import("../src/formats/bacnet.js");
+    expect(Object.fromEntries(Object.values(UNITS).map((u) => [u.name, u.id]))).toEqual({
+      "micrograms-per-cubic-meter": 219,
+      "parts-per-billion": 97,
+      "parts-per-million": 96,
+      "degrees-celsius": 62,
+      "percent-relative-humidity": 29,
+      percent: 98,
+      "no-units": 95,
+    });
+    expect(RELIABILITY_IDS).toEqual({ "no-fault-detected": 0, "no-sensor": 1, "unreliable-other": 7 });
   });
 });
 

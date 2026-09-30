@@ -14,6 +14,8 @@
 | S4 | [Sensedge Mini BACnet PICS, February 2024](https://www.kaiterra.com/hubfs/CS%20Documentation/Kaiterra%20Sensedge%20Mini%20BACnet%20Protocol%20Implementation%20Conformance%20Statement%20-%20February%202024.pdf) | Firmware 2.4.5, models SE-200 and SE-200P |
 | S5 | [Secondary MQTT Format Guide](https://support.kaiterra.com/secondary-mqtt-format) | Sensedge Mini Formats 1 and 2 |
 | S6 | [When to replace your sensor modules (Sensedge Mini)](https://support.kaiterra.com/when-to-replace-your-sensor-modules-sensedge-mini) and [lifespan FAQ](https://support.kaiterra.com/how-often-do-i-need-to-change-the-sensedge-modules) | Module life, health percentage |
+| S8 | [bacnet-stack](https://github.com/bacnet-stack/bacnet-stack) `src/bacnet/bacenum.h`, commit 8a655b665f65 | BACnet enumerations (open-source reference stack) |
+| S9 | [@bacnet-js/client](https://github.com/bacnet-js/client) `src/lib/enum.ts`, commit 27a399a00a70 | BACnet enumerations (maintained Node package) |
 | S7 | KM-200 reseller listings (testmeter.sg, aetmos.com.au), as quoted in search results | **Secondary, unverified**: the pages returned 403 or did not resolve |
 
 All retrieved 2026-09-30.
@@ -74,7 +76,13 @@ S2 lists CO2 only on the "A/P" variants. The model's variants (`packages/core/sr
 - Base URL `https://api.kaiterra.com/v1`; auth by `?key=` (HTTPS only; keys must not be embedded in web pages or apps).
 - `GET /devices/{id}`: `{id, name, model, firmware_version, home_region, handshake: {_device_ts, dmac_eth, dmac_wifi, dsn, modules: [{bay, serial, type, lifetime_pct}], ts}}`.
 - `GET /devices/{id}/top`: latest reading per parameter.
-- `GET /devices/{id}/history`: `begin`, `end` (RFC 3339, UTC), `limit`, `group_by` (`1m`, `5m`, `15m` or any divisor of 60 min; `1h`, `2h` or any divisor of 24 h; `1d`), `time_zone` (TZ database name, for hour/day boundaries), `aqi` (`us`, `in`, `cn`). Large results page with `_links.next`.
+- `GET /devices/{id}/history`, with these parameters (quoted from S3):
+  - `begin`: "Default is 1 week (168 hours) before `end`".
+  - `end`: "If unspecified, the current UTC time is used". Both are RFC 3339, UTC.
+  - `limit`: "Retrieves only the latest N data points. This value has no upper limit; if the number of results is too large to fit into a single response, pagination is used" (`_links.next`).
+  - `group_by`: `1m`, `5m`, `15m` or any divisor of 60 min; `1h`, `2h` or any divisor of 24 h; `1d`.
+  - `time_zone`: "Defines the hourly and daily averaging window boundaries". The hourly example uses `time_zone=Asia/Kathmandu` (UTC+5:45): "the hourly divisions happen on the hour in local time, which in UTC time is not 45 but 15 minutes after the hour". That is why the example's points fall at :15.
+  - `aqi`: `us`, `in` or `cn`.
 - `POST /batch`: up to 100 sub-requests `{method, relative_url}`; the response is `[{body: <JSON string>, code}]`.
 - Reading series: `{param, source?, units, span, points: [{ts, value}]}`. `span` is the interval in seconds; `source` names the module.
 - **Timestamps mark the end of the interval.** Hourly and daily averages appear only after their window closes. Fractional seconds are accepted and truncated. A time range more than an hour in the future is a 400.
@@ -101,6 +109,19 @@ B-SS (Smart Sensor), BACnet protocol revision 14, IPv4, UDP 47808, foreign devic
 | AI 10 | O3 |
 
 Analog inputs: optional Description, COV_Increment, Reliability; writable Units and COV_Increment. No NO2 or CO objects are listed.
+
+The PICS names objects but not their unit or reliability codes. Those come from the BACnet standard's enumerations. S8 and S9 agree on every one used:
+
+| Enumeration | Name | Code |
+|---|---|---|
+| EngineeringUnits | micrograms-per-cubic-meter (PM) | 219 |
+| EngineeringUnits | parts-per-billion (TVOC, O3) | 97 |
+| EngineeringUnits | parts-per-million (CO2) | 96 |
+| EngineeringUnits | degrees-celsius | 62 |
+| EngineeringUnits | percent-relative-humidity | 29 |
+| EngineeringUnits | percent (module lifespan) | 98 |
+| EngineeringUnits | no-units (AI 7) | 95 |
+| Reliability | no-fault-detected / no-sensor / unreliable-other | 0 / 1 / 7 |
 
 ## Secondary MQTT (S5)
 

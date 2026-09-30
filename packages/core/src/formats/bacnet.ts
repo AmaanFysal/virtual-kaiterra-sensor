@@ -1,7 +1,9 @@
 // BACnet object view (docs/05; S4, ADR-0007): the Device object and the analog inputs listed in
 // the Sensedge Mini PICS, with the property values a BACnet client would read. BACnet is local,
 // so Present_Value is the latest reading produced, whether or not the cloud has received it.
-// Engineering-unit numbers are from the BACnet EngineeringUnits enumeration (ASHRAE 135).
+// Engineering-unit and reliability numbers are the BACnet enumerations (ASHRAE 135), checked
+// against two open-source stacks that agree: bacnet-stack `src/bacnet/bacenum.h` (commit
+// 8a655b665f65) and @bacnet-js/client `src/lib/enum.ts` (commit 27a399a00a70). docs/02 cites them.
 
 import type { DeviceConfig } from "../model/config.js";
 import type { DeviceStatus, Reading } from "../model/types.js";
@@ -25,6 +27,13 @@ export const UNITS = {
 } as const satisfies Record<string, EngineeringUnits>;
 
 export type Reliability = "no-fault-detected" | "unreliable-other" | "no-sensor";
+
+/** BACnetReliability values (same sources as UNITS). */
+export const RELIABILITY_IDS: Readonly<Record<Reliability, number>> = {
+  "no-fault-detected": 0,
+  "no-sensor": 1,
+  "unreliable-other": 7,
+};
 
 export interface AnalogInput {
   objectIdentifier: ["analog-input", number];

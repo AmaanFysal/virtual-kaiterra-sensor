@@ -87,16 +87,21 @@ export interface HistoryQuery {
   timeZone?: string;
 }
 
-/** Default window when neither `begin` nor `end` is given (assumption, docs/09). */
+/** S3: "`begin`: Default is 1 week (168 hours) before `end`"; `end` defaults to the current time. */
 export const DEFAULT_HISTORY_SECONDS = 7 * SECONDS_PER_DAY;
-/** Largest page per series before `_links.next` (assumption, docs/09). */
+/** Largest page per series before `_links.next`. S3 says only that large results are paginated; the size is an assumption (docs/09). */
 export const MAX_PAGE_POINTS = 1440;
 
-/** `GET /devices/{id}/history`. Pages go back in time: each page holds the latest points, and `next` covers the earlier ones. */
+/**
+ * `GET /devices/{id}/history`. S3: `limit` "retrieves only the latest N data points" and has no
+ * upper limit; results too large for one response are paginated. Pages go back in time: each
+ * page holds the latest points, and `_links.next` covers the earlier ones (with `limit` reduced
+ * by what this page returned).
+ */
 export function historyResponse(device: ApiDevice, asOf: number, q: HistoryQuery, baseUrl = KAITERRA_API_BASE): { _links?: { next: string }; data: ApiSeries[] } {
   const end = q.end ?? asOf;
   const begin = q.begin ?? end - DEFAULT_HISTORY_SECONDS;
-  const limit = Math.min(q.limit ?? MAX_PAGE_POINTS, MAX_PAGE_POINTS);
+  let remaining: number | undefined;
   const timeZone = q.timeZone ?? "UTC";
   const series: ApiSeries[] = [];
   let nextEnd: number | undefined;
@@ -109,8 +114,10 @@ export function historyResponse(device: ApiDevice, asOf: number, q: HistoryQuery
         : groupReadings(list, q.groupBy, timeZone, asOf);
     points = points.filter((p) => p.ts >= begin && p.ts <= end);
     if (points.length === 0) continue;
-    if (points.length > limit) {
-      points = points.slice(points.length - limit);
+    if (q.limit !== undefined && points.length > q.limit) points = points.slice(points.length - q.limit);
+    if (points.length > MAX_PAGE_POINTS) {
+      remaining = Math.max(remaining ?? 0, points.length - MAX_PAGE_POINTS);
+      points = points.slice(points.length - MAX_PAGE_POINTS);
       const candidate = points[0]!.ts - span;
       nextEnd = nextEnd === undefined ? candidate : Math.max(nextEnd, candidate);
     }
@@ -124,7 +131,7 @@ export function historyResponse(device: ApiDevice, asOf: number, q: HistoryQuery
   const params = new URLSearchParams();
   params.set("begin", formatIso(q.begin ?? nextEnd - (end - begin)));
   params.set("end", formatIso(nextEnd));
-  if (q.limit !== undefined) params.set("limit", String(q.limit));
+  if (q.limit !== undefined && remaining !== undefined) params.set("limit", String(remaining));
   if (q.groupByText !== undefined) params.set("group_by", q.groupByText);
   if (q.timeZone !== undefined) params.set("time_zone", q.timeZone);
   return { _links: { next: `${baseUrl}/devices/${device.config.deviceId}/history?${params.toString()}` }, data };

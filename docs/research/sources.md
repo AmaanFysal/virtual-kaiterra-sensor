@@ -16,6 +16,13 @@ Everything consulted on 2026-09-30, with what each gave us and how far it can be
 | https://github.com/kaiterra/api | Example script: legacy `/sensedges/{id}` and `latest` keys | Primary, old |
 | https://www.postman.com/kaiterra/workspace/demo | Not read: needs a browser | none |
 
+## BACnet enumerations
+
+| Source | Used for |
+|---|---|
+| bacnet-stack `src/bacnet/bacenum.h` (github.com/bacnet-stack/bacnet-stack, commit 8a655b665f65) | EngineeringUnits and Reliability codes |
+| @bacnet-js/client `src/lib/enum.ts` (github.com/bacnet-js/client, commit 27a399a00a70) | The same codes, cross-checked |
+
 ## Integration code
 
 | Source | Used for |

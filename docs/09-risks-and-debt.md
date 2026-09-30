@@ -38,11 +38,9 @@ Choices the evidence does not settle. Each is one place in `packages/core/src/fo
 
 | Area | Our choice | Evidence gap |
 |---|---|---|
-| History default window | `end` = now, `begin` = `end` − 7 days | Not documented; 7 days is the span of the docs' pagination example |
-| History page size | At most 1,440 points per series (and `limit`) before `_links.next` | Not documented |
+| History page size | At most 1,440 points per series before `_links.next` | S3 says large results are paginated but not at what size |
 | `begin`/`end` | Both inclusive, applied to interval-end timestamps | Not documented |
-| Pagination | Newest points first; `next` ends one span before the page and keeps the window length | Inferred from one example; with several series of different lengths a later page may repeat points |
-| `group_by` alignment | Clock-aligned in `time_zone` (UTC by default) | The docs' hourly example labels windows at :15, which clock alignment would not |
+| Pagination | Newest points first; `next` ends one span before the page, keeps the window length and carries the remaining `limit` | Inferred from one example; with several series of different lengths a later page may repeat points |
 | Averages | Plain mean of the minute values, one decimal (two for temperature and humidity) | Only PM2.5 hourly examples exist |
 | `source` in history | Included, as in `top` | The docs' history example (probably a Laser Egg) has none |
 | Error bodies and 405 | `{message}`; 405 for a wrong method | Not documented |
@@ -50,9 +48,15 @@ Choices the evidence does not settle. Each is one place in `packages/core/src/fo
 | Legacy `/sensedges/{id}` | Not served | Only in old example code |
 | MQTT Format 1 | TVOC as `km203.rtvocb (ppb)`, O3 as `km207.r03` (copied from the guide); `rpm1c`, `rno2 (ppb)`, `rco (ppm)` guessed | Whether `rtvocb` is the reported TVOC is not stated |
 | MQTT Format 2 | `pm1`, `no2`, `co` appended | Not in the guide |
-| BACnet | COV increments; AI 7 present as `no-sensor`; objects for missing parameters omitted; EngineeringUnits numbers from ASHRAE 135 as recalled, to be checked against a BACnet stack in M10 | PICS lists names only |
+| BACnet | COV increments; AI 7 present as `no-sensor`; objects for missing parameters omitted | PICS lists names only |
 | CSV | Own layout | Export columns undocumented (R6) |
 | Time zones | `time_zone` grouping uses the runtime's time zone data (`Intl`), so a future tz-rule change in Node could shift local windows | Only affects `time_zone` queries |
+
+## Settled since M4
+
+- **Hourly windows at :15 (settled 2026-09-30).** The docs' hourly example looked misaligned with clock hours. S3 explains it: the example uses `time_zone=Asia/Kathmandu` (UTC+5:45), and "the hourly divisions happen on the hour in local time, which in UTC time is not 45 but 15 minutes after the hour". So windows are clock-aligned in the requested time zone, which is what the model does; a test reproduces the example's timestamps exactly. Nothing supports aligning to the request's `begin`, so there is no such option.
+- **History defaults and `limit` (settled 2026-09-30).** S3: `begin` defaults to 168 hours before `end`, `end` to now, and `limit` "retrieves only the latest N data points", with pagination only for results too large for one response. The first M4 version wrongly paginated whenever `limit` truncated; fixed.
+- **BACnet unit and reliability codes (settled 2026-09-30).** Verified against bacnet-stack and @bacnet-js/client (docs/02 S8, S9) and pinned by a test.
 
 ## Debt
 

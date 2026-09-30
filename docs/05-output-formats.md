@@ -20,7 +20,7 @@
 |---|---|
 | `GET /devices/{id}` | `{id, name, model: "SE-200", firmware_version: "2.4.5", home_region, handshake: {_device_ts, dmac_eth, dmac_wifi, dsn, modules: [{bay, serial, type, lifetime_pct}], ts}}`. Same key order and types as the fixture. `handshake` time is the last start, power-on or reconnect. |
 | `GET /devices/{id}/top` | `{data: [{param, source?, units, span, points: [{ts, value}]}]}`: the latest delivered reading per API name, series sorted by name as in the docs' examples |
-| `GET /devices/{id}/history` | Same series shape. Raw 1-minute points by default. `group_by` averages closed windows labelled by their end, rounded to one decimal (two for temperature and humidity). `time_zone` aligns hour and day windows, including DST. `begin`/`end` bound point timestamps (inclusive). Pages go back in time: a page holds the latest `limit` points, and `_links.next` has the same window length ending one span before them. |
+| `GET /devices/{id}/history` | Same series shape. Raw 1-minute points by default. `group_by` averages closed windows labelled by their end, rounded to one decimal (two for temperature and humidity). `time_zone` aligns hour and day windows, including DST. `begin` defaults to a week before `end`, which defaults to now (S3). `begin`/`end` bound point timestamps (inclusive). `limit` returns only the latest N points (S3). Results over 1,440 points per series page back in time: `_links.next` ends one span before the page, keeps the window length, and carries the remaining `limit`. Hour and day windows fall on the hour in local time, so Kaiterra's own `Asia/Kathmandu` example lands at :15 UTC (reproduced in a test). |
 | `POST /batch` | `[{body: <JSON string>, code}]`. Up to 100 GETs of `/devices/{id}`, `/top` or `/history`; sub-requests inherit the parent's key. |
 
 Errors: 401 missing or rejected key; 404 unknown device or path; 405 wrong method; 400 for bad `begin`/`end`/`limit`/`group_by`/`time_zone`, `end` more than an hour ahead of `asOf`, or a bad batch. Error bodies are `{message}`. UDIDs match case-insensitively, with or without dashes. `format`, `units` and `aqi` are accepted and ignored.
@@ -41,7 +41,7 @@ Identifiers are stable per seed (`identity.ts`): DSN `KG2` + 8 digits (as in the
 - **Device object**: `Kaiterra-SE-200`, vendor Kaiterra, firmware 2.4.5, protocol revision 14, instance from config or seed.
 - **Analog inputs from the PICS**: AI 1 PM2.5, 2 PM10, 3 TVOC, 4 Temperature, 5 Humidity, 6 CO2, 7 Unassigned, 8–9 KM20X Module Lifespan (bays 0 and 1, `lifetime_pct`), 10 O3. Objects for parameters the variant lacks are left out (the PICS marks AIs as dynamically creatable and deletable).
 
-Properties: Present_Value (the latest reading), Units (EngineeringUnits name and number), Status_Flags, Reliability (`unreliable-other` during warm-up, `no-sensor` for AI 7 or before the first reading), Out_Of_Service false, COV_Increment. PM1, NO2 and CO have no PICS object and are not exposed.
+Properties: Present_Value (the latest reading), Units (EngineeringUnits name and number, verified against two BACnet stacks; docs/02), Status_Flags, Reliability (`unreliable-other` during warm-up, `no-sensor` for AI 7 or before the first reading), Out_Of_Service false, COV_Increment. PM1, NO2 and CO have no PICS object and are not exposed.
 
 ## CSV (`csv.ts`)
 
