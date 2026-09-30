@@ -2,18 +2,36 @@
 
 **Purpose:** the two ways to run the virtual sensor outside the care home: files in and out (CLI), and a Kaiterra-compatible HTTP API (server).
 
-> Status: `fixtures:fetch` built (M1); the rest planned (M6, M8).
+> Status: CLI built (M1 `fixtures:fetch`, M6 `scenarios`, `generate`, `convert`; M7 `report`); server planned (M8).
 
 ## CLI (`pnpm vks <command>`)
 
-| Command | Status | Does |
-|---|---|---|
-| `fixtures:fetch` | built | Fetches `/devices/{id}`, `/top`, `/history` (1 min and `group_by=1h`) and a `/batch` from the public test Sensedge into `test/fixtures/kaiterra-api/live/`, with `.source.json` sidecars (`provenance: "live"`). Reads `KAITERRA_API_KEY` from the environment or `.env`; without it, prints how to add one and exits 0. The key is redacted from every log line, saved body and sidecar URL, raw or URL-encoded. |
-| `generate` | M5/M6 | Scenario → true-air file |
-| `convert` | M6 | True-air file + device config → readings in a chosen format |
-| `report` | M7 | True vs sensed report |
+The CLI is the only place that reads files, the environment or the wall clock. Relative paths resolve against the directory `pnpm` was run from. Output goes to stdout unless `--out` is given; use `pnpm -s vks …` to keep pnpm's banner out of piped output. Exit codes: 0 success, 1 failure, 2 usage error.
 
-The CLI is the only place that reads files, the environment or the wall clock (for example the `retrieved` date on fixtures).
+| Command | Does |
+|---|---|
+| `scenarios` | Lists `data/scenarios` with room, length and description |
+| `generate --scenario <id\|path> [--seed S] [--out f.csv\|f.jsonl] [--format csv\|jsonl]` | Runs the generator; the seed defaults to the scenario id |
+| `convert (--input <true-air file> \| --scenario <id\|path>) [--device <config.json>] [--seed S] [--as-of T] [--format F] [--out f]` | Runs the virtual device over the true air and writes format F |
+| `report …` | True vs sensed validation report (M7, docs/08) |
+| `fixtures:fetch` | Replaces the provisional API fixtures with live ones when `KAITERRA_API_KEY` is set (M1). Without a key it prints how to add one and exits 0; with one, the key is redacted from every log line and saved file. |
+
+`convert` formats:
+- `readings`: JSON Lines with the side channel (this project's analysis format)
+- `kaiterra-top`, `kaiterra-device`, `kaiterra-history` (with `--group-by`, `--time-zone`, `--begin`, `--end`, `--limit`)
+- `mqtt1`, `mqtt2`: JSON Lines of `{topic, published_at, payload}`
+- `bacnet`
+- `csv` (with `--frequency raw|hourly|daily`)
+
+`--as-of` (default: the last true-air timestamp) is the query time: readings delivered later are not shown, as with the real API.
+
+Device config comes from, in order: defaults (id `5e200000-0000-4000-8000-000000000001`, seed `1`), the scenario's `device` settings, the `--device` file (a `DeviceConfigInput` whose event `t` may be RFC 3339 or Unix seconds), then `--seed`. Examples: `data/devices/room1.json`, `data/devices/lounge-well.json`.
+
+```sh
+pnpm vks generate --scenario door-closed-co2-rise --out out/door.csv
+pnpm -s vks convert --input out/door.csv --device data/devices/room1.json --format kaiterra-history --group-by 1h
+pnpm -s vks convert --scenario hand-gel-tvoc-spikes --format mqtt2 > out/gel.jsonl
+```
 
 ## Kaiterra-compatible server (M8)
 

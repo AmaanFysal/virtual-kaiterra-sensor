@@ -14,12 +14,14 @@ This file is an index. Details live in `docs/`; read the relevant doc before wor
 - `pnpm typecheck`: typecheck every package
 - `pnpm test`: run Vitest across the repo (unit, property, golden, determinism guard, fixture checks)
 - `pnpm vks fixtures:fetch`: replace the provisional API fixtures with live ones (needs `KAITERRA_API_KEY` in `.env`; does nothing without it)
+- `pnpm vks scenarios` / `generate --scenario <id>` / `convert --scenario <id> --format kaiterra-top`: run the generator and the virtual device from the command line (docs/06); `pnpm -s vks …` for clean piped output
 - `pnpm vks help`: CLI usage
 
 ## Layout
 
 - `packages/core` (`@vks/core`): the pure, deterministic sensor model: time, RNG, spec table, device, validation, and the output formats (Kaiterra API router, MQTT, BACnet view, CSV); no I/O
-- `apps/cli` (`@vks/cli`): the I/O shell (files, `.env`, network for `fixtures:fetch`)
+- `apps/cli` (`@vks/cli`): the I/O shell: `scenarios`, `generate`, `convert`, `fixtures:fetch` (files, `.env`, network)
+- `data/devices/`: example device configs
 - `test/fixtures/kaiterra-api/`: provisional API and MQTT fixtures with provenance sidecars
 - `docs/`: numbered design docs, ADRs, research notes, workstreams
 - `packages/true-air-gen` (`@vks/true-air-gen`): synthetic true-air scenarios for standalone testing (a test tool, not the sim's air model)

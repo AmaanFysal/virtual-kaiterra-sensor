@@ -7,7 +7,9 @@ It runs standalone and is designed to plug into the [care home simulation](https
 ```sh
 pnpm install
 pnpm test
-pnpm vks help
+pnpm vks scenarios
+pnpm vks generate --scenario door-closed-co2-rise --out out/door.csv
+pnpm -s vks convert --input out/door.csv --device data/devices/room1.json --format kaiterra-top
 ```
 
 ```ts

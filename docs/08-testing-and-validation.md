@@ -2,7 +2,7 @@
 
 **Purpose:** what the tests prove, the invariants they hold, and the planned validation report.
 
-> Status: M0–M5 tests built (2026-09-30): 188 tests. Report planned (M7).
+> Status: M0–M6 tests built (2026-09-30): 197 tests. Report planned (M7).
 
 ## Test files
 
@@ -16,6 +16,7 @@
 | `packages/core/test/conditions.test.ts` | M3b: each effect off by default, then PM humidity (shower), MOx ethanol (hand gel), humidity and temperature, baseline, ABC (four weeks, poorly ventilated vs daily fresh air), warm-up (power-on, decay, per module, suppression), outliers |
 | `packages/core/test/formats.test.ts` | M4: API `top`, `history` (raw, hourly, open hour left out, `limit` as latest-N, pagination without gaps, BST day windows, Kaiterra's Kathmandu :15 example reproduced), `devices/{id}` and `batch` match the fixtures' shapes and the delivered readings; errors; MQTT Formats 1/2 match the guide, backfill published on reconnect; BACnet objects per the PICS with verified unit and reliability codes; CSV equals the API's averages; no side channel in any format |
 | `packages/true-air-gen/test/generate.test.ts` | M5: all eleven scenarios valid and plausible; CO2 steady state and first-order rise against the closed form (Persily & de Jonge rates); decay at ventilation plus deposition; each scenario makes its point; timeline expansion; validation errors; determinism and golden hashes; every scenario through the default device stays in spec |
+| `apps/cli/test/cli.test.ts` | M6: true-air CSV/JSONL round trips and errors with line numbers; `scenarios`, `generate` (reproducible), `convert` to every format; scenario device settings, `--seed`, device-file events, `--as-of` delivery; usage errors and exit codes |
 | `apps/cli/test/fixtures.test.ts` | Every fixture has a provenance sidecar and no key, and matches the documented API/MQTT shapes |
 | `apps/cli/test/fixtures-fetch.test.ts` | `fixtures:fetch` skips without a key; with one it never logs or saves it (raw or URL-encoded), even when the API echoes it back |
 

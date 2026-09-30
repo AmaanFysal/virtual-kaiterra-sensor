@@ -11,7 +11,8 @@
     "vks": "tsx src/main.ts"
   },
   "dependencies": {
-    "@vks/core": "workspace:*"
+    "@vks/core": "workspace:*",
+    "@vks/true-air-gen": "workspace:*"
   },
   "devDependencies": {
     "tsx": "^4.23.15"

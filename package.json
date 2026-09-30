@@ -10,11 +10,12 @@
     "prepare": "git config core.hooksPath .githooks || true",
     "typecheck": "pnpm -r typecheck",
     "test": "vitest run --passWithNoTests",
-    "vks": "pnpm --silent --filter @vks/cli vks"
+    "vks": "tsx apps/cli/src/main.ts"
   },
   "devDependencies": {
     "@types/node": "^22",
     "typescript": "^7.0.2",
-    "vitest": "^5.0.2"
+    "vitest": "^5.0.2",
+    "tsx": "^4.23.15"
   }
 }

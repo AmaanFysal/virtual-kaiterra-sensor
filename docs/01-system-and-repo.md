@@ -2,14 +2,14 @@
 
 **Purpose:** how the repo is laid out, what each package may depend on, and the tooling around it.
 
-> Status: M0–M5 built (2026-09-30). Source: the approved plan in `docs/workstreams/v1-standalone-sensor/plan.md`; conventions copied from virtual-care-home.
+> Status: M0–M6 built (2026-09-30). Source: the approved plan in `docs/workstreams/v1-standalone-sensor/plan.md`; conventions copied from virtual-care-home.
 
 ## Packages
 
 | Package | Kind | May depend on | Does |
 |---|---|---|---|
 | `@vks/core` (`packages/core`) | pure | nothing | Time and RNG, the Sensedge Mini spec table, the device model, validation helpers, output formats and the pure Kaiterra API router |
-| `@vks/cli` (`apps/cli`) | I/O | `@vks/core` | Command line: `fixtures:fetch` now; `generate`, `convert`, `report` later |
+| `@vks/cli` (`apps/cli`) | I/O | `@vks/core` | Command line: `scenarios`, `generate`, `convert`, `fixtures:fetch` (M1, M6); `report` (M7) |
 | `@vks/true-air-gen` (`packages/true-air-gen`) | pure | `@vks/core` | Synthetic true-air scenarios for standalone testing (not a room model for the sim) |
 | `@vks/server` (planned, M8–M9) | I/O | `@vks/core` | Kaiterra-compatible HTTP API; plug-in adapter host |
 

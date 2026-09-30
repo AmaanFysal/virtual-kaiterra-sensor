@@ -17,7 +17,7 @@ One pure, streaming device engine (`createDevice().step()`) that every host driv
 | M3b (built) | **Condition effects:** PM humidity, MOx cross-sensitivity and baseline, NDIR ABC, warm-up, outliers; research citations | 03, 08, 09, ADR-0008 | Condition tests pass; defaults unchanged (golden hashes) |
 | M4 (built) | **Output formats:** API JSON (device, top, history with `group_by` and pagination, batch), TVOC names per ADR-0004, MQTT F1/F2, BACnet view, CSV | 05, ADR-0004 | Contract tests against the fixtures |
 | M5 (built) | **Synthetic true-air generator** (test tool) and scenarios including shower, hand gel, poorly ventilated weeks, power cycle | 04 | Sanity and golden tests |
-| M6 | **CLI** `generate`, `convert`, `report`; true-air CSV/JSONL files | 06 | End to end on the scenarios |
+| M6 (built) | **CLI** `generate`, `convert`, `report`; true-air CSV/JSONL files | 06 | End to end on the scenarios |
 | M7 | **Validation report** (HTML and Markdown) | 08 | Report in `reports/` |
 | M8 | **Kaiterra-compatible server** | 06 | Contract tests |
 | M9 | **Plug-in interface**: adapter, mock host, ADR-0006 accepted or revised | 07 | Mock host run on the care home clock |

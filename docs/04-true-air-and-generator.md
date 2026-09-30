@@ -19,7 +19,14 @@
 | `co` | ppm | WELL variant only |
 | `ethanol` | ppb | Interferent, e.g. hand gel: moves MOx TVOC readings when that effect is on, never the reference |
 
-A missing key means "not known"; the device skips intervals without enough samples. Samples may be irregular: batch mode interpolates linearly onto the 5 s grid and treats gaps over 600 s as unknown. File formats (CSV and JSON Lines) come with the CLI in M6.
+A missing key means "not known"; the device skips intervals without enough samples. Samples may be irregular: batch mode interpolates linearly onto the 5 s grid and treats gaps over 600 s as unknown.
+
+Files (`packages/core/src/io/files.ts`; pure, so a plug-in host can reuse them):
+
+- **CSV**: header `timestamp,pm1,pm25,pm10,co2,tvoc,temp,rh,o3,no2,co,ethanol` (any subset, any order; `ts` also accepted); blank cells are unknown; `#` lines are comments.
+- **JSON Lines**: `{"ts": "2026-11-03T06:00:00Z", "co2": 650, …}`.
+
+Timestamps are RFC 3339 or Unix seconds. Errors name the line.
 
 ## Synthetic generator (test tool only)
 
