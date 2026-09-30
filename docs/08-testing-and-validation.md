@@ -2,7 +2,7 @@
 
 **Purpose:** what the tests prove, the invariants they hold, and the planned validation report.
 
-> Status: M0–M3 tests built (2026-09-30): 107 tests. Report planned (M7).
+> Status: M0–M4 tests built (2026-09-30): 142 tests. Report planned (M7).
 
 ## Test files
 
@@ -14,6 +14,7 @@
 | `packages/core/test/model.test.ts` | M2: the envelope property test, reporting cadence and labels, sources, grid and range, gaps, lag (the reference follows the closed-form first-order response), determinism, stream independence, golden hashes, config validation |
 | `packages/core/test/lifecycle.test.ts` | M3a: module aging (exposure-dependent), expiry, recalibration, replacement, dropouts, offline buffering and backfill, buffer overflow, random outages, power, stepping on the care home clock, live equals batch |
 | `packages/core/test/conditions.test.ts` | M3b: each effect off by default, then PM humidity (shower), MOx ethanol (hand gel), humidity and temperature, baseline, ABC (four weeks, poorly ventilated vs daily fresh air), warm-up (power-on, decay, per module, suppression), outliers |
+| `packages/core/test/formats.test.ts` | M4: API `top`, `history` (raw, hourly, open hour left out, pagination without gaps, BST day windows), `devices/{id}` and `batch` match the fixtures' shapes and the delivered readings; errors; MQTT Formats 1/2 match the guide, backfill published on reconnect; BACnet objects per the PICS; CSV equals the API's averages; no side channel in any format |
 | `apps/cli/test/fixtures.test.ts` | Every fixture has a provenance sidecar and no key, and matches the documented API/MQTT shapes |
 | `apps/cli/test/fixtures-fetch.test.ts` | `fixtures:fetch` skips without a key; with one it never logs or saves it (raw or URL-encoded), even when the API echoes it back |
 
@@ -24,6 +25,7 @@
 3. **Deterministic.** Same config and input give byte-identical readings; golden sha256 hashes pin two configurations. Re-record them only on purpose, and say why in the commit.
 4. **Independent streams.** Turning dropouts or outliers on, or reporting fewer parameters, never changes any other reading's value.
 5. **Real cadence.** One reading per parameter per minute, `ts` = interval end, `span` = 60, values on the resolution grid and inside the reportable range.
+6. **Real formats.** Every output has the fixture's structure, shows only delivered readings (BACnet: produced readings), and never contains the side channel.
 
 Health flags: `out-of-range`, `extended-range`, `module-expired`, `calibration-overdue`, `warm-up`, `outlier`, `pm-humidity`, `mox-humidity`, `mox-temperature`, `mox-ethanol`, `mox-baseline`, `abc-offset`. `backfilled` is not a health flag.
 

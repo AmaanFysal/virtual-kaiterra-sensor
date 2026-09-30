@@ -87,6 +87,8 @@ export interface DeviceStatus {
   modules: ModuleStatus[];
   onboardAgeDays: number;
   abcOffsetPpm: number;
+  /** Last time the device (re)connected to the cloud: start, power-on or reconnect. */
+  handshakeT: number | undefined;
 }
 
 export interface StepResult {

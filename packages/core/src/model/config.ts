@@ -32,6 +32,22 @@ export interface AvailabilityConfig {
   bufferMinutes: number;
 }
 
+export type TvocName = "tvoc" | "rtvoc";
+
+/** How the device presents itself in its output formats (docs/05). */
+export interface IdentityConfig {
+  /** Firmware for `GET /devices/{id}` (S4 PICS: 2.4.5). */
+  firmwareVersion: string;
+  /** `home_region` for `GET /devices/{id}` (S3 example: "row.europe"). */
+  homeRegion: string;
+  /** API reading name(s) for TVOC (ADR-0004: both until a live response settles it). */
+  tvocNames: TvocName[];
+  /** BACnet device instance (S4: user-specified); default derived from the seed. */
+  bacnetInstance: number | undefined;
+  /** BACnet Location property. */
+  location: string;
+}
+
 /** PM over-reading at high humidity (hygroscopic growth, κ-Köhler form; ADR-0008). */
 export interface PmHumidityConfig {
   enabled: boolean;
@@ -124,6 +140,7 @@ export interface DeviceConfig {
   events: DeviceEvent[];
   availability: AvailabilityConfig;
   conditions: ConditionsConfig;
+  identity: IdentityConfig;
 }
 
 type DeepPartial<T> = { [K in keyof T]?: T[K] extends (infer U)[] ? U[] : T[K] extends object ? DeepPartial<T[K]> : T[K] };
@@ -161,6 +178,7 @@ export function resolveConfig(input: DeviceConfigInput): DeviceConfig {
     if (!available.includes(p)) throw new Error(`Variant "${variant}" does not measure "${p}"`);
   }
   const c = input.conditions ?? {};
+  const id = input.identity ?? {};
   const config: DeviceConfig = {
     deviceId: input.deviceId,
     name: input.name ?? input.deviceId,
@@ -196,6 +214,13 @@ export function resolveConfig(input: DeviceConfigInput): DeviceConfig {
       },
       outliers: { ...DEFAULT_CONDITIONS.outliers, ...c.outliers },
     },
+    identity: {
+      firmwareVersion: id.firmwareVersion ?? "2.4.5",
+      homeRegion: id.homeRegion ?? "row.europe",
+      tvocNames: (id.tvocNames as TvocName[] | undefined) ?? ["tvoc", "rtvoc"],
+      bacnetInstance: id.bacnetInstance,
+      location: id.location ?? "",
+    },
   };
   validateConfig(config);
   return config;
@@ -215,6 +240,9 @@ function validateConfig(c: DeviceConfig): void {
   if (c.moduleLifetimePct.length !== 2 || c.moduleLifetimePct.some((p) => p < 0 || p > 100)) fail("moduleLifetimePct needs two values in [0, 100]");
   if (c.minCoverage <= 0 || c.minCoverage > 1) fail("minCoverage must be in (0, 1]");
   if (c.availability.bufferMinutes < 0) fail("bufferMinutes must be ≥ 0");
+  if (c.identity.tvocNames.length === 0 || c.identity.tvocNames.some((n) => n !== "tvoc" && n !== "rtvoc")) fail('identity.tvocNames must be a non-empty subset of ["tvoc", "rtvoc"]');
+  const inst = c.identity.bacnetInstance;
+  if (inst !== undefined && (!Number.isInteger(inst) || inst < 0 || inst > 4_194_302)) fail("identity.bacnetInstance must be an integer in [0, 4194302]");
   for (const e of c.events) {
     if (!Number.isInteger(e.t)) fail(`event times must be whole seconds (got ${e.t})`);
   }

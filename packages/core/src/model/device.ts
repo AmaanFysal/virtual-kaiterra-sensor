@@ -64,6 +64,7 @@ export function createDevice(input: DeviceConfigInput | DeviceConfig): Device {
   let outageUntil: number | undefined;
   let onboardAgeDays = config.onboardAgeDays;
   let calibrationIndex = 0;
+  let handshakeT: number | undefined;
   const events: DeviceEvent[] = [...config.events].sort((a, b) => a.t - b.t);
 
   const modules: ModuleState[] = variant.bays.map((type, bay) => ({
@@ -151,6 +152,7 @@ export function createDevice(input: DeviceConfigInput | DeviceConfig): Device {
         out.log.push({ t, kind: e.on ? "power-on" : "power-off" });
         if (e.on) {
           lag.clear();
+          if (online()) handshakeT = t;
           startWarmUp(t, params);
         }
         return;
@@ -158,7 +160,10 @@ export function createDevice(input: DeviceConfigInput | DeviceConfig): Device {
         const wasOnline = online();
         scheduledOnline = e.online;
         if (wasOnline !== online()) out.log.push({ t, kind: online() ? "online" : "offline" });
-        if (!wasOnline && online()) flushBuffer(t, out);
+        if (!wasOnline && online()) {
+          handshakeT = t;
+          flushBuffer(t, out);
+        }
         return;
       }
       case "replace-module": {
@@ -243,6 +248,7 @@ export function createDevice(input: DeviceConfigInput | DeviceConfig): Device {
       outageUntil = undefined;
       if (scheduledOnline) {
         out.log.push({ t: ts, kind: "online" });
+        handshakeT = ts;
         flushBuffer(ts, out);
       }
     } else if (outageUntil === undefined && offlineU < config.availability.randomOfflinePerDay / (SECONDS_PER_DAY / span)) {
@@ -374,6 +380,7 @@ export function createDevice(input: DeviceConfigInput | DeviceConfig): Device {
       const out: StepResult = { delivered: [], log: [] };
       if (last === undefined) {
         startedAt = t;
+        handshakeT = t;
         last = t - dt;
         if (cond.warmUp.enabled && cond.warmUp.atStart) startWarmUp(t, params);
       }
@@ -404,6 +411,7 @@ export function createDevice(input: DeviceConfigInput | DeviceConfig): Device {
         modules: moduleStatus,
         onboardAgeDays,
         abcOffsetPpm: abcOffset,
+        handshakeT,
       };
     },
     undelivered() {

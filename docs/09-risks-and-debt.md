@@ -2,7 +2,7 @@
 
 **Purpose:** what could make the virtual sensor wrong, and what we are knowingly carrying.
 
-> Status: updated 2026-09-30 (end of M3).
+> Status: updated 2026-09-30 (end of M4).
 
 ## Open risks
 
@@ -32,6 +32,28 @@
 - The sim clock has no DST, so from 28 Mar 2027 the care home's clock times are GMT, not UK local time. The Unix mapping stays exact; only local-time labels would drift. Relevant if `time_zone` grouping (M4) is used with `Europe/London`.
 - Temperature and humidity use one first-order lag each; the real enclosure's thermal response is more complex.
 
+## Format guesses (M4)
+
+Choices the evidence does not settle. Each is one place in `packages/core/src/formats/`; a live response or device sample decides them.
+
+| Area | Our choice | Evidence gap |
+|---|---|---|
+| History default window | `end` = now, `begin` = `end` − 7 days | Not documented; 7 days is the span of the docs' pagination example |
+| History page size | At most 1,440 points per series (and `limit`) before `_links.next` | Not documented |
+| `begin`/`end` | Both inclusive, applied to interval-end timestamps | Not documented |
+| Pagination | Newest points first; `next` ends one span before the page and keeps the window length | Inferred from one example; with several series of different lengths a later page may repeat points |
+| `group_by` alignment | Clock-aligned in `time_zone` (UTC by default) | The docs' hourly example labels windows at :15, which clock alignment would not |
+| Averages | Plain mean of the minute values, one decimal (two for temperature and humidity) | Only PM2.5 hourly examples exist |
+| `source` in history | Included, as in `top` | The docs' history example (probably a Laser Egg) has none |
+| Error bodies and 405 | `{message}`; 405 for a wrong method | Not documented |
+| `format`, `units`, `aqi` | Accepted and ignored: no unit conversion, no AQI values in points | Documented (`aqi`) or seen in integration code; not implemented |
+| Legacy `/sensedges/{id}` | Not served | Only in old example code |
+| MQTT Format 1 | TVOC as `km203.rtvocb (ppb)`, O3 as `km207.r03` (copied from the guide); `rpm1c`, `rno2 (ppb)`, `rco (ppm)` guessed | Whether `rtvocb` is the reported TVOC is not stated |
+| MQTT Format 2 | `pm1`, `no2`, `co` appended | Not in the guide |
+| BACnet | COV increments; AI 7 present as `no-sensor`; objects for missing parameters omitted; EngineeringUnits numbers from ASHRAE 135 as recalled, to be checked against a BACnet stack in M10 | PICS lists names only |
+| CSV | Own layout | Export columns undocumented (R6) |
+| Time zones | `time_zone` grouping uses the runtime's time zone data (`Intl`), so a future tz-rule change in Node could shift local windows | Only affects `time_zone` queries |
+
 ## Debt
 
-- The fixtures README lists evidence from integration code that is not yet enforced by any test beyond shape checks (M4 contract tests will).
+- Contract tests compare shapes with provisional fixtures; they cannot catch a difference the fixtures themselves get wrong (R1).

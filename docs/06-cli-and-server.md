@@ -17,4 +17,4 @@ The CLI is the only place that reads files, the environment or the wall clock (f
 
 ## Kaiterra-compatible server (M8)
 
-Same paths, parameters, pagination, batch and errors as `https://api.kaiterra.com/v1`, with `?key=` auth. Software written for the real API reads from it by changing only the base URL. Its clock is injected (a replay clock, or the plug-in host's sim time); the core never reads the wall clock.
+Same paths, parameters, pagination, batch and errors as `https://api.kaiterra.com/v1`, with `?key=` auth. The routing and every response body are already built and tested in the core (`kaiterraApi`, docs/05); the server adds HTTP, keys and the clock. Software written for the real API reads from it by changing only the base URL. Its clock is injected (a replay clock, or the plug-in host's sim time); the core never reads the wall clock.
