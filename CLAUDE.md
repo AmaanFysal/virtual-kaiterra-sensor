@@ -15,7 +15,7 @@ This file is an index. Details live in `docs/`; read the relevant doc before wor
 - `pnpm test`: run Vitest across the repo (unit, property, golden, determinism guard, fixture checks)
 - `pnpm vks fixtures:fetch`: replace the provisional API fixtures with live ones (needs `KAITERRA_API_KEY` in `.env`; does nothing without it)
 - `pnpm vks scenarios` / `generate --scenario <id>` / `convert --scenario <id> --format kaiterra-top`: run the generator and the virtual device from the command line (docs/06); `pnpm -s vks …` for clean piped output
-- `pnpm vks report --all`: regenerate the validation reports in `docs/workstreams/v1-standalone-sensor/reports/` (a test fails if they are stale)
+- `pnpm vks report --all`: regenerate the validation reports in `docs/workstreams/v1-standalone-sensor/reports/`. Markdown and `.stats.json` are committed (a test fails if they are stale); HTML is gitignored and a CI artifact
 - `pnpm vks help`: CLI usage
 
 ## Layout
@@ -27,7 +27,7 @@ This file is an index. Details live in `docs/`; read the relevant doc before wor
 - `docs/`: numbered design docs, ADRs, research notes, workstreams
 - `packages/true-air-gen` (`@vks/true-air-gen`): synthetic true-air scenarios for standalone testing (a test tool, not the sim's air model)
 - `data/scenarios/`: the scenario files
-- Planned: `apps/server` (M8), plug-in adapter (M9)
+- Planned: `apps/server` (M8). The plug-in adapter (M9) is on hold until the care home's plug-in API contract exists (docs/09)
 
 ## Key facts
 

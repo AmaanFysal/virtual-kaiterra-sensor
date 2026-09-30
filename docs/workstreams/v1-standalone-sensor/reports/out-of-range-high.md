@@ -50,7 +50,7 @@ CO2 between 5,000 and 10,000 ppm: reported, but outside the published accuracy r
 
 ## Scenario timeline
 
-- 3 occupancy and other instantaneous events (see the HTML report's event strip)
+- 3 occupancy and other instantaneous events (the HTML report, from `pnpm vks report`, shows them in each chart's event strip)
 
 ## Method
 

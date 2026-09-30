@@ -34,7 +34,7 @@ No reading was flagged: every reading is covered by the spec envelope.
 
 - 2026-11-03 10:30Z to 2026-11-03 10:40Z: cleaning
 - 2026-11-03 11:00Z to 2026-11-03 11:30Z: window open
-- 2 occupancy and other instantaneous events (see the HTML report's event strip)
+- 2 occupancy and other instantaneous events (the HTML report, from `pnpm vks report`, shows them in each chart's event strip)
 
 ## Method
 

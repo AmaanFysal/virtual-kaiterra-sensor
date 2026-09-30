@@ -32,7 +32,7 @@ Held step changes in every quantity, without jitter, to measure the sensor's res
 No reading was flagged: every reading is covered by the spec envelope.
 ## Scenario timeline
 
-- 3 occupancy and other instantaneous events (see the HTML report's event strip)
+- 3 occupancy and other instantaneous events (the HTML report, from `pnpm vks report`, shows them in each chart's event strip)
 
 ## Method
 

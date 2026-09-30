@@ -40,7 +40,7 @@ NDIR automatic baseline calibration assumes the lowest reading of each 8-day per
 ## Scenario timeline
 
 - 2026-11-03 00:00Z to 2026-12-01 00:00Z: door closed
-- 169 occupancy and other instantaneous events (see the HTML report's event strip)
+- 169 occupancy and other instantaneous events (the HTML report, from `pnpm vks report`, shows them in each chart's event strip)
 
 ## Method
 

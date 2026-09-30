@@ -1,0 +1,193 @@
+{
+  "scenario": "hand-gel-tvoc-spikes",
+  "seed": "hand-gel-tvoc-spikes",
+  "device": {
+    "deviceId": "5e200000-0000-4000-8000-000000000001",
+    "variant": "pm-tvoc-co2",
+    "seed": "hand-gel-tvoc-spikes",
+    "specProfile": "looser",
+    "conditionsOn": [
+      "mox"
+    ],
+    "moduleLifetimePct": [
+      100,
+      100
+    ]
+  },
+  "from": "2026-11-03T08:01:00Z",
+  "to": "2026-11-03T16:00:00Z",
+  "totals": {
+    "readings": 3360,
+    "healthy": 2880,
+    "healthyWithin": 2880,
+    "flagged": 480,
+    "backfilled": 0
+  },
+  "params": [
+    {
+      "param": "pm1",
+      "readings": 480,
+      "missing": 0,
+      "healthy": 480,
+      "healthyWithinShare": 1,
+      "withinShare": 1,
+      "biasVsTruth": 0.255659,
+      "maeVsTruth": 0.462616,
+      "rmseVsTruth": 0.506975,
+      "maeVsReference": 0.462624,
+      "worstHealthyRatio": 0.289832,
+      "lagMinutes": null,
+      "expectedLagMinutes": 0.0723824,
+      "flagCounts": {}
+    },
+    {
+      "param": "pm25",
+      "readings": 480,
+      "missing": 0,
+      "healthy": 480,
+      "healthyWithinShare": 1,
+      "withinShare": 1,
+      "biasVsTruth": 0.238048,
+      "maeVsTruth": 0.342686,
+      "rmseVsTruth": 0.450115,
+      "maeVsReference": 0.342693,
+      "worstHealthyRatio": 0.422,
+      "lagMinutes": null,
+      "expectedLagMinutes": 0.0723824,
+      "flagCounts": {}
+    },
+    {
+      "param": "pm10",
+      "readings": 480,
+      "missing": 0,
+      "healthy": 480,
+      "healthyWithinShare": 1,
+      "withinShare": 1,
+      "biasVsTruth": 0.670546,
+      "maeVsTruth": 0.676969,
+      "rmseVsTruth": 0.777052,
+      "maeVsReference": 0.677058,
+      "worstHealthyRatio": 0.55759,
+      "lagMinutes": null,
+      "expectedLagMinutes": 0.0723824,
+      "flagCounts": {}
+    },
+    {
+      "param": "co2",
+      "readings": 480,
+      "missing": 0,
+      "healthy": 480,
+      "healthyWithinShare": 1,
+      "withinShare": 1,
+      "biasVsTruth": 5.46514,
+      "maeVsTruth": 6.71438,
+      "rmseVsTruth": 8.25244,
+      "maeVsReference": 6.63366,
+      "worstHealthyRatio": 0.358065,
+      "lagMinutes": null,
+      "expectedLagMinutes": 0.868589,
+      "flagCounts": {}
+    },
+    {
+      "param": "tvoc",
+      "readings": 480,
+      "missing": 0,
+      "healthy": 0,
+      "healthyWithinShare": 1,
+      "withinShare": 0.0416667,
+      "biasVsTruth": 213.147,
+      "maeVsTruth": 213.182,
+      "rmseVsTruth": 248.365,
+      "maeVsReference": 213.182,
+      "worstHealthyRatio": 0,
+      "lagMinutes": null,
+      "expectedLagMinutes": 0.434294,
+      "flagCounts": {
+        "mox-temperature": 39,
+        "mox-baseline": 438,
+        "mox-humidity": 454,
+        "mox-ethanol": 460
+      }
+    },
+    {
+      "param": "temp",
+      "readings": 480,
+      "missing": 0,
+      "healthy": 480,
+      "healthyWithinShare": 1,
+      "withinShare": 1,
+      "biasVsTruth": 0.135414,
+      "maeVsTruth": 0.135414,
+      "rmseVsTruth": 0.138462,
+      "maeVsReference": 0.138008,
+      "worstHealthyRatio": 0.708639,
+      "lagMinutes": null,
+      "expectedLagMinutes": 4.34294,
+      "flagCounts": {}
+    },
+    {
+      "param": "rh",
+      "readings": 480,
+      "missing": 0,
+      "healthy": 480,
+      "healthyWithinShare": 1,
+      "withinShare": 1,
+      "biasVsTruth": 0.0378013,
+      "maeVsTruth": 0.250411,
+      "rmseVsTruth": 0.312459,
+      "maeVsReference": 0.230021,
+      "worstHealthyRatio": 0.260873,
+      "lagMinutes": null,
+      "expectedLagMinutes": 2.17147,
+      "flagCounts": {}
+    }
+  ],
+  "flags": [
+    {
+      "flag": "mox-baseline",
+      "params": [
+        "tvoc"
+      ],
+      "periods": 22,
+      "readings": 438,
+      "maxExcess": 532.101,
+      "firstFrom": "2026-11-03T08:00:00Z",
+      "lastTo": "2026-11-03T15:58:00Z"
+    },
+    {
+      "flag": "mox-temperature",
+      "params": [
+        "tvoc"
+      ],
+      "periods": 1,
+      "readings": 39,
+      "maxExcess": 456.195,
+      "firstFrom": "2026-11-03T08:00:00Z",
+      "lastTo": "2026-11-03T08:39:00Z"
+    },
+    {
+      "flag": "mox-humidity",
+      "params": [
+        "tvoc"
+      ],
+      "periods": 2,
+      "readings": 454,
+      "maxExcess": 532.101,
+      "firstFrom": "2026-11-03T08:06:00Z",
+      "lastTo": "2026-11-03T16:00:00Z"
+    },
+    {
+      "flag": "mox-ethanol",
+      "params": [
+        "tvoc"
+      ],
+      "periods": 1,
+      "readings": 460,
+      "maxExcess": 532.101,
+      "firstFrom": "2026-11-03T08:20:00Z",
+      "lastTo": "2026-11-03T16:00:00Z"
+    }
+  ],
+  "log": {},
+  "undelivered": 0
+}

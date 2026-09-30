@@ -80,7 +80,7 @@ The TVOC sensor responds to ethanol, e.g. alcohol hand gel, which is not part of
 - 2026-11-03 13:20Z to 2026-11-03 13:22Z: hand gel
 - 2026-11-03 14:20Z to 2026-11-03 14:22Z: hand gel
 - 2026-11-03 15:20Z to 2026-11-03 15:22Z: hand gel
-- 17 occupancy and other instantaneous events (see the HTML report's event strip)
+- 17 occupancy and other instantaneous events (the HTML report, from `pnpm vks report`, shows them in each chart's event strip)
 
 ## Method
 

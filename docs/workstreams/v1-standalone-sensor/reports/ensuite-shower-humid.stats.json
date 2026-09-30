@@ -1,0 +1,163 @@
+{
+  "scenario": "ensuite-shower-humid",
+  "seed": "ensuite-shower-humid",
+  "device": {
+    "deviceId": "5e200000-0000-4000-8000-000000000001",
+    "variant": "pm-tvoc-co2",
+    "seed": "ensuite-shower-humid",
+    "specProfile": "looser",
+    "conditionsOn": [
+      "pmHumidity"
+    ],
+    "moduleLifetimePct": [
+      100,
+      100
+    ]
+  },
+  "from": "2026-11-03T07:01:00Z",
+  "to": "2026-11-03T09:00:00Z",
+  "totals": {
+    "readings": 840,
+    "healthy": 759,
+    "healthyWithin": 759,
+    "flagged": 81,
+    "backfilled": 0
+  },
+  "params": [
+    {
+      "param": "pm1",
+      "readings": 120,
+      "missing": 0,
+      "healthy": 96,
+      "healthyWithinShare": 1,
+      "withinShare": 0.85,
+      "biasVsTruth": 4.1764,
+      "maeVsTruth": 4.1764,
+      "rmseVsTruth": 8.87335,
+      "maeVsReference": 4.17654,
+      "worstHealthyRatio": 0.724012,
+      "lagMinutes": null,
+      "expectedLagMinutes": 0.0723824,
+      "flagCounts": {
+        "pm-humidity": 24
+      }
+    },
+    {
+      "param": "pm25",
+      "readings": 120,
+      "missing": 0,
+      "healthy": 93,
+      "healthyWithinShare": 1,
+      "withinShare": 0.85,
+      "biasVsTruth": 5.64113,
+      "maeVsTruth": 7.02108,
+      "rmseVsTruth": 18.0595,
+      "maeVsReference": 7.02205,
+      "worstHealthyRatio": 0.676311,
+      "lagMinutes": null,
+      "expectedLagMinutes": 0.0723824,
+      "flagCounts": {
+        "pm-humidity": 27
+      }
+    },
+    {
+      "param": "pm10",
+      "readings": 120,
+      "missing": 0,
+      "healthy": 90,
+      "healthyWithinShare": 1,
+      "withinShare": 0.825,
+      "biasVsTruth": 24.4693,
+      "maeVsTruth": 26.2208,
+      "rmseVsTruth": 73.1942,
+      "maeVsReference": 26.2224,
+      "worstHealthyRatio": 0.650003,
+      "lagMinutes": 0,
+      "expectedLagMinutes": 0.0723824,
+      "flagCounts": {
+        "pm-humidity": 30
+      }
+    },
+    {
+      "param": "co2",
+      "readings": 120,
+      "missing": 0,
+      "healthy": 120,
+      "healthyWithinShare": 1,
+      "withinShare": 1,
+      "biasVsTruth": -12.1274,
+      "maeVsTruth": 24.3828,
+      "rmseVsTruth": 39.2154,
+      "maeVsReference": 12.0676,
+      "worstHealthyRatio": 0.449749,
+      "lagMinutes": 1,
+      "expectedLagMinutes": 0.868589,
+      "flagCounts": {}
+    },
+    {
+      "param": "tvoc",
+      "readings": 120,
+      "missing": 0,
+      "healthy": 120,
+      "healthyWithinShare": 1,
+      "withinShare": 1,
+      "biasVsTruth": -2.475,
+      "maeVsTruth": 2.475,
+      "rmseVsTruth": 2.57335,
+      "maeVsReference": 2.475,
+      "worstHealthyRatio": 0.590924,
+      "lagMinutes": null,
+      "expectedLagMinutes": 0.434294,
+      "flagCounts": {}
+    },
+    {
+      "param": "temp",
+      "readings": 120,
+      "missing": 0,
+      "healthy": 120,
+      "healthyWithinShare": 1,
+      "withinShare": 1,
+      "biasVsTruth": 0.0506396,
+      "maeVsTruth": 0.0699021,
+      "rmseVsTruth": 0.0745473,
+      "maeVsReference": 0.0550566,
+      "worstHealthyRatio": 0.391891,
+      "lagMinutes": null,
+      "expectedLagMinutes": 4.34294,
+      "flagCounts": {}
+    },
+    {
+      "param": "rh",
+      "readings": 120,
+      "missing": 0,
+      "healthy": 120,
+      "healthyWithinShare": 1,
+      "withinShare": 1,
+      "biasVsTruth": 1.43899,
+      "maeVsTruth": 3.12012,
+      "rmseVsTruth": 4.80101,
+      "maeVsReference": 1.29162,
+      "worstHealthyRatio": 0.703339,
+      "lagMinutes": 2,
+      "expectedLagMinutes": 2.17147,
+      "flagCounts": {}
+    }
+  ],
+  "flags": [
+    {
+      "flag": "pm-humidity",
+      "params": [
+        "pm25",
+        "pm10",
+        "pm1"
+      ],
+      "periods": 3,
+      "readings": 81,
+      "maxExcess": 265.056,
+      "firstFrom": "2026-11-03T07:16:00Z",
+      "lastTo": "2026-11-03T07:41:00Z"
+    }
+  ],
+  "log": {},
+  "undelivered": 0
+}

@@ -6,7 +6,7 @@ import { parseArgs } from "node:util";
 import { UsageError, type CliIo } from "../commands.js";
 import { deviceConfig, listScenarios, loadScenario, userPath } from "../inputs.js";
 import { buildReport } from "./model.js";
-import { renderHtml, renderIndex, renderMarkdown } from "./render.js";
+import { renderHtml, renderIndex, renderMarkdown, renderStatsJson } from "./render.js";
 
 export const REPORTS_DIR = join("docs", "workstreams", "v1-standalone-sensor", "reports");
 
@@ -32,11 +32,12 @@ export function reportCommand(io: CliIo, argv: string[]): number {
     const model = buildReport(scenario, seed, config);
     writeFileSync(join(outDir, `${scenario.id}.html`), renderHtml(model));
     writeFileSync(join(outDir, `${scenario.id}.md`), renderMarkdown(model));
+    writeFileSync(join(outDir, `${scenario.id}.stats.json`), renderStatsJson(model));
     const t = model.data.totals;
     io.stderr(`${scenario.id}: ${t.healthyWithin}/${t.healthy} healthy readings in spec, ${t.flagged} flagged\n`);
     rows.push({ id: scenario.id, description: scenario.description, model });
   }
   if (values.all) writeFileSync(join(outDir, "README.md"), renderIndex(rows));
-  io.stderr(`wrote ${values.all ? rows.length * 2 + 1 : 2} files to ${outDir}\n`);
+  io.stderr(`wrote ${values.all ? rows.length * 3 + 1 : 3} files to ${outDir}\n`);
   return 0;
 }

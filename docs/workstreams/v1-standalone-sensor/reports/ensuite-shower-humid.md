@@ -44,7 +44,7 @@ Particles grow by taking up water at high humidity, so the PM sensor over-reads 
 - 2026-11-03 07:00Z to 2026-11-03 08:10Z: door closed
 - 2026-11-03 07:15Z to 2026-11-03 07:27Z: shower
 - 2026-11-03 07:35Z to 2026-11-03 08:05Z: extract fan on
-- 4 occupancy and other instantaneous events (see the HTML report's event strip)
+- 4 occupancy and other instantaneous events (the HTML report, from `pnpm vks report`, shows them in each chart's event strip)
 
 ## Method
 

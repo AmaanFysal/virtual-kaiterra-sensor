@@ -66,7 +66,11 @@ The generator is a test tool, so these only shape test data, never the sensor mo
 
 - Lag is measured in whole minutes (the reporting interval), so it cannot resolve PM's 10 s response; it is blank when the truth barely moves.
 - Charts of runs longer than 6 hours show bucket means, which hide single-minute spikes such as outliers. The statistics and flag tables use every reading.
-- The committed reports are about 2.7 MB of HTML in total. The staleness test keeps them honest, but any change that moves a number means regenerating them.
+- Only the Markdown summaries and statistics are committed (about 80 KB); the HTML charts are generated on demand and published as a CI artifact. Any change that moves a number means regenerating the reports, or the drift test fails.
+
+## On hold
+
+- **M9, the care home plug-in adapter, is on hold** (decided 2026-09-30) until the care home's plug-in API contract exists. That contract is part of the care home's `v1.0-testbed` milestone. M9 will follow the contract as written, and the draft interface in docs/07 and ADR-0006 will be revised to match it. Nothing in M8 depends on it.
 
 ## Debt
 

@@ -2,7 +2,7 @@
 
 **Purpose:** what the tests prove, the invariants they hold, and the planned validation report.
 
-> Status: M0–M7 built (2026-09-30): 210 tests; validation reports in `docs/workstreams/v1-standalone-sensor/reports/`.
+> Status: M0–M7 built (2026-09-30): 211 tests; validation report summaries in `docs/workstreams/v1-standalone-sensor/reports/`, HTML as a CI artifact.
 
 ## Test files
 
@@ -18,7 +18,7 @@
 | `packages/true-air-gen/test/generate.test.ts` | M5: all eleven scenarios valid and plausible; CO2 steady state and first-order rise against the closed form (Persily & de Jonge rates); decay at ventilation plus deposition; each scenario makes its point; timeline expansion; validation errors; determinism and golden hashes; every scenario through the default device stays in spec |
 | `apps/cli/test/cli.test.ts` | M6: true-air CSV/JSONL round trips and errors with line numbers; `scenarios`, `generate` (reproducible), `convert` to every format; scenario device settings, `--seed`, device-file events, `--as-of` delivery; usage errors and exit codes |
 | `packages/core/test/report.test.ts` | M7: in-spec shares, errors and missing intervals; flagged minutes merged into periods with their excess; lag near τ on a step; lag blank on flat air; device log counts |
-| `apps/cli/test/report.test.ts` | M7: HTML and Markdown written; a section per condition effect; deterministic; **committed reports equal a fresh `report --all`**; escaping; chart bucketing with gaps; device events as spans |
+| `apps/cli/test/report.test.ts` | M7: HTML, Markdown and statistics written; a section per condition effect; deterministic; **committed Markdown and statistics equal a fresh `report --all`**; statistics agree with the Markdown; escaping; chart bucketing with gaps; device events as spans |
 | `apps/cli/test/fixtures.test.ts` | Every fixture has a provenance sidecar and no key, and matches the documented API/MQTT shapes |
 | `apps/cli/test/fixtures-fetch.test.ts` | `fixtures:fetch` skips without a key; with one it never logs or saves it (raw or URL-encoded), even when the API echoes it back |
 
@@ -35,7 +35,13 @@ Health flags: `out-of-range`, `extended-range`, `module-expired`, `calibration-o
 
 ## Validation report (M7)
 
-`pnpm vks report --scenario <id>` (or `--all`) runs a scenario's true air through the device with the scenario's device settings. It writes `<id>.html` (charts) and `<id>.md` to `docs/workstreams/v1-standalone-sensor/reports/`, plus a `README.md` index for `--all`. Reports are deterministic, and a test fails when the committed ones differ from what the code generates, so regenerate them with `pnpm vks report --all` after any change that moves a number.
+`pnpm vks report --scenario <id>` (or `--all`) runs a scenario's true air through the device with the scenario's device settings. It writes three files per scenario to `docs/workstreams/v1-standalone-sensor/reports/`, plus a `README.md` index for `--all`:
+
+- `<id>.md`: the summary, **committed**.
+- `<id>.stats.json`: the statistics, rounded to 6 significant digits, **committed**.
+- `<id>.html`: the charts, **gitignored**, generated on demand and attached to every CI run as the `validation-reports` artifact.
+
+Reports are deterministic. A test fails when the committed Markdown or statistics differ from what the code generates, so regenerate them with `pnpm vks report --all` after any change that moves a number.
 
 Each report has:
 

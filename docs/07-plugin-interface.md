@@ -2,7 +2,7 @@
 
 **Purpose:** how the virtual sensor will attach to the care home simulation once that repo has a plug-in API.
 
-> Status: design only (ADR-0006, Proposed). Built in M9; the sim side does not exist yet.
+> Status: design only (ADR-0006, Proposed). **M9 is on hold** until the care home publishes its plug-in API contract (part of its `v1.0-testbed` milestone). M9 will follow that contract, and this draft will be revised to match it (docs/09).
 
 ## Division of labour
 

@@ -48,7 +48,7 @@ The sensor is settling after power-on or a module swap.
 ## Scenario timeline
 
 - 2026-11-03 10:00Z to 2026-11-03 10:15Z: power off
-- 3 occupancy and other instantaneous events (see the HTML report's event strip)
+- 3 occupancy and other instantaneous events (the HTML report, from `pnpm vks report`, shows them in each chart's event strip)
 
 ## Method
 

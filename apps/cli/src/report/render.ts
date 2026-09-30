@@ -107,7 +107,7 @@ export function renderMarkdown(m: ReportModel): string {
   const points = m.annotations.filter((a) => a.to === a.from);
   for (const a of spans.slice(0, 30)) out.push(`- ${time(a.from)} to ${time(a.to)}: ${a.label}`);
   if (spans.length > 30) out.push(`- …and ${spans.length - 30} more periods`);
-  if (points.length) out.push(`- ${points.length} occupancy and other instantaneous events (see the HTML report's event strip)`);
+  if (points.length) out.push(`- ${points.length} occupancy and other instantaneous events (the HTML report, from \`pnpm vks report\`, shows them in each chart's event strip)`);
   out.push("", "## Method", "", METHOD_MD, "");
   return out.join("\n");
 }
@@ -236,13 +236,70 @@ ${CHART_SCRIPT}
 `;
 }
 
+/** Rounds to 6 significant digits so the committed statistics don't churn on floating-point noise. */
+const sig = (x: number) => (x === 0 || !Number.isFinite(x) ? x : Number(x.toPrecision(6)));
+
+/** The report's numbers as stable JSON: what the committed drift check compares. */
+export function renderStatsJson(m: ReportModel): string {
+  const c = m.config;
+  const d = m.data;
+  const stats = {
+    scenario: m.scenario.id,
+    seed: m.seed,
+    device: {
+      deviceId: c.deviceId,
+      variant: c.variant,
+      seed: c.seed,
+      specProfile: c.specProfile,
+      conditionsOn: Object.entries(c.conditions).filter(([, v]) => v.enabled).map(([k]) => k),
+      moduleLifetimePct: c.moduleLifetimePct,
+    },
+    from: formatIso(d.from),
+    to: formatIso(d.to),
+    totals: d.totals,
+    params: d.params.map((p) => ({
+      param: p.param,
+      readings: p.readings,
+      missing: p.missing,
+      healthy: p.healthy,
+      healthyWithinShare: sig(p.healthyWithinShare),
+      withinShare: sig(p.withinShare),
+      biasVsTruth: sig(p.biasVsTruth),
+      maeVsTruth: sig(p.maeVsTruth),
+      rmseVsTruth: sig(p.rmseVsTruth),
+      maeVsReference: sig(p.maeVsReference),
+      worstHealthyRatio: sig(p.worstHealthyRatio),
+      lagMinutes: p.lagMinutes ?? null,
+      expectedLagMinutes: sig(p.expectedLagMinutes),
+      flagCounts: p.flagCounts,
+    })),
+    flags: flagGroups(d.spans).map((g) => ({
+      flag: g.flag,
+      params: g.params,
+      periods: g.spans.length,
+      readings: g.readings,
+      maxExcess: sig(g.maxExcess),
+      firstFrom: formatIso(g.spans[0]!.from - 60),
+      lastTo: formatIso(g.spans[g.spans.length - 1]!.to),
+    })),
+    log: d.log,
+    undelivered: m.undelivered,
+  };
+  return `${JSON.stringify(stats, null, 2)}\n`;
+}
+
 export function renderIndex(rows: { id: string; description: string; model: ReportModel }[]): string {
-  const out = ["# Validation reports", "", "One report per scenario (`pnpm vks report --all`), each as HTML (charts) and Markdown. Regenerated deterministically; do not edit by hand.", ""];
+  const out = [
+    "# Validation reports",
+    "",
+    "One report per scenario, from `pnpm vks report --all`. The Markdown summaries and `<id>.stats.json` statistics are committed, and a test fails if they drift from the code. The HTML reports with charts are generated on demand (gitignored) and attached to every CI run as the `validation-reports` artifact. Do not edit by hand.",
+    "",
+  ];
   out.push("| Scenario | Healthy in spec | Readings | Flagged | Flags | Report |", "|---|---|---|---|---|---|");
   for (const r of rows) {
     const t = r.model.data.totals;
     const flags = [...new Set(r.model.data.spans.map((s) => s.flag))].join(", ") || "none";
-    out.push(`| ${r.id} | ${pct(t.healthy === 0 ? 1 : t.healthyWithin / t.healthy)} | ${fmt(t.readings, 0)} | ${fmt(t.flagged, 0)} | ${flags} | [HTML](${r.id}.html) · [Markdown](${r.id}.md) |`);
+    out.push(`| ${r.id} | ${pct(t.healthy === 0 ? 1 : t.healthyWithin / t.healthy)} | ${fmt(t.readings, 0)} | ${fmt(t.flagged, 0)} | ${flags} | [Markdown](${r.id}.md) · [stats](${r.id}.stats.json) |`);
   }
   return `${out.join("\n")}\n`;
 }

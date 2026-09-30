@@ -30,7 +30,7 @@ Packages export `./src/index.ts` directly; there is no build step. Scripts run w
 | `.githooks/commit-msg` | Rejects commit messages matching `.githooks/attribution-patterns.txt` (case-insensitive) |
 | `.githooks/check-doc-attribution.sh` | Fails if a tracked doc credits Claude (deciders/authors lines, "written by" prose) |
 | `.github/workflows/no-ai-attribution.yml` | On PRs: title, description, every commit message, and the docs check |
-| `.github/workflows/ci.yml` | On pushes to main and PRs: `pnpm typecheck`, `pnpm test`, and a grep for committed API keys |
+| `.github/workflows/ci.yml` | On pushes to main and PRs: `pnpm typecheck`, `pnpm test` (including the report drift check), a grep for committed API keys, and `pnpm vks report --all`, whose HTML is uploaded as the `validation-reports` artifact |
 
 The hook, patterns file, docs checker and attribution workflow are copied from virtual-care-home so both repos enforce the same rule the same way. The CI workflow is new here: the care home has none yet.
 

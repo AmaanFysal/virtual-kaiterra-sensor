@@ -58,14 +58,25 @@ describe("vks report", () => {
     expect(a.read("cleaning-tvoc-spike.md")).toBe(b.read("cleaning-tvoc-spike.md"));
   });
 
-  it("keeps the committed reports in step with the code (regenerate with `pnpm vks report --all`)", async () => {
+  it("keeps the committed summaries and statistics in step with the code (regenerate with `pnpm vks report --all`)", async () => {
     const r = await report("--all");
     expect(r.code, r.err).toBe(0);
     const committed = join(REPO, REPORTS_DIR);
-    const files = readdirSync(r.outDir).sort();
-    expect(readdirSync(committed).sort()).toEqual(files);
+    const tracked = (dir: string) => readdirSync(dir).filter((f) => !f.endsWith(".html")).sort();
+    const files = tracked(r.outDir);
+    expect(files).toHaveLength(11 * 2 + 1);
+    expect(tracked(committed)).toEqual(files);
     for (const f of files) expect(readFileSync(join(committed, f), "utf8"), `${f} is stale: run pnpm vks report --all`).toBe(r.read(f));
   }, 60_000);
+
+  it("writes statistics JSON that matches the Markdown", async () => {
+    const r = await report("--scenario", "power-cycle-and-module-swap");
+    const stats = JSON.parse(r.read("power-cycle-and-module-swap.stats.json"));
+    expect(stats.totals).toMatchObject({ readings: 2415, flagged: 163 });
+    expect(stats.flags.map((f: { flag: string }) => f.flag)).toEqual(["warm-up"]);
+    expect(stats.params[0]).toMatchObject({ param: "pm1", healthyWithinShare: 1 });
+    expect(r.read("power-cycle-and-module-swap.md")).toContain("163 of 2,415");
+  });
 
   it("rejects missing or conflicting options", async () => {
     expect((await report()).code).toBe(2);

@@ -1,0 +1,157 @@
+{
+  "scenario": "poorly-ventilated-weeks",
+  "seed": "poorly-ventilated-weeks",
+  "device": {
+    "deviceId": "5e200000-0000-4000-8000-000000000001",
+    "variant": "pm-tvoc-co2",
+    "seed": "poorly-ventilated-weeks",
+    "specProfile": "looser",
+    "conditionsOn": [
+      "abc"
+    ],
+    "moduleLifetimePct": [
+      100,
+      100
+    ]
+  },
+  "from": "2026-11-03T00:01:00Z",
+  "to": "2026-12-01T00:00:00Z",
+  "totals": {
+    "readings": 282240,
+    "healthy": 253440,
+    "healthyWithin": 253440,
+    "flagged": 28800,
+    "backfilled": 0
+  },
+  "params": [
+    {
+      "param": "pm1",
+      "readings": 40320,
+      "missing": 0,
+      "healthy": 40320,
+      "healthyWithinShare": 1,
+      "withinShare": 1,
+      "biasVsTruth": 0.623853,
+      "maeVsTruth": 0.638698,
+      "rmseVsTruth": 0.720749,
+      "maeVsReference": 0.638699,
+      "worstHealthyRatio": 0.582498,
+      "lagMinutes": null,
+      "expectedLagMinutes": 0.0723824,
+      "flagCounts": {}
+    },
+    {
+      "param": "pm25",
+      "readings": 40320,
+      "missing": 0,
+      "healthy": 40320,
+      "healthyWithinShare": 1,
+      "withinShare": 1,
+      "biasVsTruth": 0.450178,
+      "maeVsTruth": 0.486253,
+      "rmseVsTruth": 0.58571,
+      "maeVsReference": 0.486253,
+      "worstHealthyRatio": 0.5271,
+      "lagMinutes": null,
+      "expectedLagMinutes": 0.0723824,
+      "flagCounts": {}
+    },
+    {
+      "param": "pm10",
+      "readings": 40320,
+      "missing": 0,
+      "healthy": 40320,
+      "healthyWithinShare": 1,
+      "withinShare": 1,
+      "biasVsTruth": -0.187643,
+      "maeVsTruth": 0.339601,
+      "rmseVsTruth": 0.413971,
+      "maeVsReference": 0.339603,
+      "worstHealthyRatio": 0.434967,
+      "lagMinutes": null,
+      "expectedLagMinutes": 0.0723824,
+      "flagCounts": {}
+    },
+    {
+      "param": "co2",
+      "readings": 40320,
+      "missing": 0,
+      "healthy": 11520,
+      "healthyWithinShare": 1,
+      "withinShare": 0.743155,
+      "biasVsTruth": -47.7932,
+      "maeVsTruth": 57.2898,
+      "rmseVsTruth": 70.9558,
+      "maeVsReference": 57.2969,
+      "worstHealthyRatio": 0.44822,
+      "lagMinutes": null,
+      "expectedLagMinutes": 0.868589,
+      "flagCounts": {
+        "abc-offset": 28800
+      }
+    },
+    {
+      "param": "tvoc",
+      "readings": 40320,
+      "missing": 0,
+      "healthy": 40320,
+      "healthyWithinShare": 1,
+      "withinShare": 1,
+      "biasVsTruth": -0.245116,
+      "maeVsTruth": 0.65933,
+      "rmseVsTruth": 0.822485,
+      "maeVsReference": 0.659307,
+      "worstHealthyRatio": 0.294925,
+      "lagMinutes": null,
+      "expectedLagMinutes": 0.434294,
+      "flagCounts": {}
+    },
+    {
+      "param": "temp",
+      "readings": 40320,
+      "missing": 0,
+      "healthy": 40320,
+      "healthyWithinShare": 1,
+      "withinShare": 1,
+      "biasVsTruth": 0.147843,
+      "maeVsTruth": 0.147843,
+      "rmseVsTruth": 0.150817,
+      "maeVsReference": 0.147869,
+      "worstHealthyRatio": 0.759521,
+      "lagMinutes": null,
+      "expectedLagMinutes": 4.34294,
+      "flagCounts": {}
+    },
+    {
+      "param": "rh",
+      "readings": 40320,
+      "missing": 0,
+      "healthy": 40320,
+      "healthyWithinShare": 1,
+      "withinShare": 1,
+      "biasVsTruth": 0.502511,
+      "maeVsTruth": 0.514616,
+      "rmseVsTruth": 0.586918,
+      "maeVsReference": 0.513528,
+      "worstHealthyRatio": 0.423365,
+      "lagMinutes": 2,
+      "expectedLagMinutes": 2.17147,
+      "flagCounts": {}
+    }
+  ],
+  "flags": [
+    {
+      "flag": "abc-offset",
+      "params": [
+        "co2"
+      ],
+      "periods": 1,
+      "readings": 28800,
+      "maxExcess": 75.7693,
+      "firstFrom": "2026-11-11T00:00:00Z",
+      "lastTo": "2026-12-01T00:00:00Z"
+    }
+  ],
+  "log": {},
+  "undelivered": 0
+}

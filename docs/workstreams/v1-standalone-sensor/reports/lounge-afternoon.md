@@ -33,7 +33,7 @@ No reading was flagged: every reading is covered by the spec envelope.
 ## Scenario timeline
 
 - 2026-11-03 15:00Z to 2026-11-03 15:10Z: cooking
-- 6 occupancy and other instantaneous events (see the HTML report's event strip)
+- 6 occupancy and other instantaneous events (the HTML report, from `pnpm vks report`, shows them in each chart's event strip)
 
 ## Method
 

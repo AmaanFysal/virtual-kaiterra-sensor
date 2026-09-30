@@ -22,6 +22,6 @@ const result = simulate(
 result.readings; // [{ param: "co2", ts, span: 60, value, source?, … }]
 ```
 
-Status: the sensor model, output formats, synthetic true-air scenarios, CLI and validation reports are built (M0–M7); see the [reports](docs/workstreams/v1-standalone-sensor/reports/README.md). The Kaiterra-compatible server and the care home plug-in adapter are next (`docs/workstreams/v1-standalone-sensor/`).
+Status: the sensor model, output formats, synthetic true-air scenarios, CLI and validation reports are built (M0–M7); see the [reports](docs/workstreams/v1-standalone-sensor/reports/README.md). The Kaiterra-compatible server is next. The care home plug-in adapter waits for the care home's plug-in API contract (`docs/workstreams/v1-standalone-sensor/`).
 
 Design docs start at [CLAUDE.md](CLAUDE.md) and [docs/](docs/). Kaiterra's specifications and API are cited in [docs/02](docs/02-sensedge-mini-reference.md).
