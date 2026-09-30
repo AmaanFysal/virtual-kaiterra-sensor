@@ -2,7 +2,7 @@
 
 **Purpose:** what could make the virtual sensor wrong, and what we are knowingly carrying.
 
-> Status: updated 2026-09-30 (end of M1).
+> Status: updated 2026-09-30 (end of M2).
 
 ## Open risks
 
@@ -21,10 +21,12 @@
 - PM1 borrows PM2.5's accuracy; the KM-200 is assumed to report PM1 (ADR-0003).
 - T90: CO2 120 s, TVOC 60 s, electrochemical 60 s, humidity 300 s, temperature 600 s (ADR-0003).
 - KM-201 and KM-208 life 21 months; on-board drift horizon 730 days (ADR-0003).
+- The bias/drift/noise split 0.5/0.25/0.25 and AR(1) 0.5 noise (ADR-0002).
 
 ## Known modelling limits
 
 - The sim clock has no DST, so from 28 Mar 2027 the care home's clock times are GMT, not UK local time. The Unix mapping stays exact; only local-time labels would drift. Relevant if `time_zone` grouping (M4) is used with `Europe/London`.
+- Temperature and humidity use one first-order lag each; the real enclosure's thermal response is more complex.
 
 ## Debt
 

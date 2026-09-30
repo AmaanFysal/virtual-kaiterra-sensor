@@ -10,6 +10,16 @@ pnpm test
 pnpm vks help
 ```
 
-Status: Kaiterra reference, spec table and provisional fixtures (M0–M1). See `docs/workstreams/v1-standalone-sensor/` for what comes next.
+```ts
+import { simulate } from "@vks/core";
+
+const result = simulate(
+  { deviceId: "room-1", seed: "room-1" },
+  [{ t: 1793685600, air: { pm25: 8, pm10: 12, co2: 650, tvoc: 120, temp: 21.5, rh: 45 } } /* … */],
+);
+result.readings; // [{ param: "co2", ts, span: 60, value, source?, … }]
+```
+
+Status: core sensor model (M0–M2). See `docs/workstreams/v1-standalone-sensor/` for what comes next.
 
 Design docs start at [CLAUDE.md](CLAUDE.md) and [docs/](docs/). Kaiterra's specifications and API are cited in [docs/02](docs/02-sensedge-mini-reference.md).
