@@ -1,0 +1,7 @@
+{
+  "provenance": "from docs",
+  "url": "https://support.kaiterra.com/secondary-mqtt-format",
+  "retrieved": "2026-09-30",
+  "provisional": true,
+  "note": "Sensedge Mini Secondary MQTT Format 1 (raw module-prefixed keys), topic kaiterra/device/history/+."
+}

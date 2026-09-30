@@ -7,8 +7,9 @@ It runs standalone and is designed to plug into the [care home simulation](https
 ```sh
 pnpm install
 pnpm test
+pnpm vks help
 ```
 
-Status: repo scaffold (M0). See `docs/workstreams/v1-standalone-sensor/` for what comes next.
+Status: Kaiterra reference, spec table and provisional fixtures (M0–M1). See `docs/workstreams/v1-standalone-sensor/` for what comes next.
 
 Design docs start at [CLAUDE.md](CLAUDE.md) and [docs/](docs/). Kaiterra's specifications and API are cited in [docs/02](docs/02-sensedge-mini-reference.md).

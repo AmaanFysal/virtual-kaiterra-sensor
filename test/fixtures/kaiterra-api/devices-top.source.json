@@ -1,0 +1,7 @@
+{
+  "provenance": "from docs",
+  "url": "https://dev.kaiterra.com",
+  "retrieved": "2026-09-30",
+  "provisional": true,
+  "note": "GET /v1/devices/{id}/top example. Uses the deprecated `rtvoc`; sources are SE-100 modules (km100, km102)."
+}

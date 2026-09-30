@@ -9,7 +9,8 @@
   "scripts": {
     "prepare": "git config core.hooksPath .githooks || true",
     "typecheck": "pnpm -r typecheck",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "vks": "pnpm --silent --filter @vks/cli vks"
   },
   "devDependencies": {
     "@types/node": "^22",

@@ -1,0 +1,18 @@
+{
+  "id": "00000000-0031-0101-0000-00007e57c0de",
+  "name": "Office",
+  "model": "SE-100",
+  "firmware_version": "1.15.0.2",
+  "home_region": "row.europe",
+  "handshake": {
+    "_device_ts": "2022-07-25T02:48:00Z",
+    "dmac_eth": "00:00:00:00:0F:FF",
+    "dmac_wifi": "54:86:FF:28:04:87",
+    "dsn": "VC27911111",
+    "modules": [
+      { "bay": 0, "serial": "VH21110009", "type": "KM-103", "lifetime_pct": 29.96 },
+      { "bay": 1, "serial": "VH21110010", "type": "KM-100", "lifetime_pct": 29.94 }
+    ],
+    "ts": "2022-07-25T02:47:59Z"
+  }
+}

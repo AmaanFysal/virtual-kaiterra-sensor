@@ -1,0 +1,7 @@
+{
+  "ts": 1624874676,
+  "dsn": "KG200104631",
+  "dudid": "00000000-0031-0101-0000-00007e57c0de",
+  "data": { "temperature": 28.90, "humidity": 28.23, "pm25": 21, "pm10": 22, "co2": 1471, "tvoc": 0, "o3": 20 },
+  "units": { "temperature": "C", "humidity": "%", "pm25": "ug/m3", "pm10": "ug/m3", "co2": "ppm", "tvoc": "ppb", "o3": "ppb" }
+}
