@@ -10,7 +10,7 @@ pnpm test
 pnpm vks scenarios
 pnpm vks generate --scenario door-closed-co2-rise --out out/door.csv
 pnpm -s vks convert --input out/door.csv --device data/devices/room1.json --format kaiterra-top
-pnpm -s vks serve --scenario door-closed-co2-rise --key demo   # Kaiterra-compatible API on :8788/v1
+pnpm -s vks serve --scenario door-closed-co2-rise --key demo   # Kaiterra-compatible API on :8790/v1
 ```
 
 ```ts

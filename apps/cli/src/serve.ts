@@ -9,7 +9,7 @@ import { generate } from "@vks/true-air-gen";
 import { UsageError, type CliIo } from "./commands.js";
 import { deviceConfig, loadScenario, loadTrueAir, userPath } from "./inputs.js";
 
-export const DEFAULT_PORT = 8788;
+export const DEFAULT_PORT = 8790;
 
 /** A stable UUID-shaped device id for a scenario that has no device file. */
 export function scenarioDeviceId(scenarioId: string): string {

@@ -30,6 +30,11 @@ async function serve(...argv: string[]) {
 }
 
 describe("vks serve", () => {
+  it("listens on 8790 by default, clear of the care home's 8787 and 8788", async () => {
+    const { DEFAULT_PORT } = await import("../src/serve.js");
+    expect(DEFAULT_PORT).toBe(8790);
+  });
+
   it("serves several scenarios, each as its own device", async () => {
     const { h, out } = await serve("--scenario", "door-closed-co2-rise", "--scenario", "hand-gel-tvoc-spikes", "--key", "k1");
     const ids = [scenarioDeviceId("door-closed-co2-rise"), scenarioDeviceId("hand-gel-tvoc-spikes")];

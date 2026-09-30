@@ -40,9 +40,9 @@ pnpm -s vks convert --scenario hand-gel-tvoc-spikes --format mqtt2 > out/gel.jso
 
 ```sh
 pnpm -s vks serve --scenario door-closed-co2-rise --scenario ensuite-shower-humid --key demo
-curl 'http://127.0.0.1:8788/v1/devices/<id>/top?key=demo'
-curl 'http://127.0.0.1:8788/v1/devices/<id>/history?key=demo&group_by=1h&time_zone=Europe/London'
-curl -X POST 'http://127.0.0.1:8788/v1/batch?key=demo' -H 'Content-Type: application/json' -d '[{"method":"GET","relative_url":"/devices/<id>/top"}]'
+curl 'http://127.0.0.1:8790/v1/devices/<id>/top?key=demo'
+curl 'http://127.0.0.1:8790/v1/devices/<id>/history?key=demo&group_by=1h&time_zone=Europe/London'
+curl -X POST 'http://127.0.0.1:8790/v1/batch?key=demo' -H 'Content-Type: application/json' -d '[{"method":"GET","relative_url":"/devices/<id>/top"}]'
 ```
 
 | Option | Meaning |
@@ -52,7 +52,7 @@ curl -X POST 'http://127.0.0.1:8788/v1/batch?key=demo' -H 'Content-Type: applica
 | `--key K` (repeatable) | Accepted keys; without it, any non-empty `?key=` is accepted |
 | `--clock fixed` (default) `[--start T]` | "Now" is fixed: the end of the data, or `T` |
 | `--clock replay [--speed 60] [--start T]` | "Now" runs from the start of the data (or `T`) at `speed`× real time, and holds at the end |
-| `--port 8788 --host 127.0.0.1` | Where to listen (8788, so it doesn't clash with the care home's 8787) |
+| `--port 8790 --host 127.0.0.1` | Where to listen (8790 by default, clear of the care home's server on 8787 and its test servers on 8788) |
 | `--cors` | Adds `Access-Control-Allow-*` headers for browser dashboards |
 
 Behaviour:

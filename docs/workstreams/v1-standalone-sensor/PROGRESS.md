@@ -4,7 +4,7 @@
 
 ## Status
 
-M0–M4 merged to main (PR #1). M0–M7 merged to main (PRs #1, #2). M8 built on branch `v1-server` (2026-09-30), awaiting the owner's review. 227 tests pass; typecheck clean. M9 on hold (see Blockers).
+M0–M4 merged to main (PR #1). M0–M7 merged to main (PRs #1, #2). M8 built on branch `v1-server`, PR into main (2026-09-30); default server port 8790. 228 tests pass; typecheck clean. **The repo is paused after M8**: M9 waits for the care home's plug-in API contract (see Blockers).
 
 ## Done
 
@@ -26,8 +26,7 @@ Nothing.
 
 ## Next
 
-- Owner review of M8; push `v1-server` and open a PR when asked.
-- M9 when the care home's plug-in API contract exists.
+- Paused. M9 (care home adapter) starts when the care home's plug-in API contract exists, and follows it.
 
 ## Blockers
 
@@ -38,6 +37,7 @@ Nothing.
 
 | Date | Session | Outcome |
 |---|---|---|
+| 2026-09-30 | M8 review | Default server port 8790 (the care home's test servers use 8788); PR opened; repo paused until the care home's plug-in API contract |
 | 2026-09-30 | M8 | Kaiterra-compatible HTTP server and `vks serve`; replay device in core; checked with the real `kaiterra-async-client`; 227 tests pass |
 | 2026-09-30 | M5–M7 review | HTML reports no longer committed (Markdown and statistics JSON are; HTML is a CI artifact); M9 on hold until the care home's plug-in API contract |
 | 2026-09-30 | M5–M7 | Generator (11 scenarios, Persily & de Jonge CO2), CLI (scenarios, generate, convert), validation reports for every scenario (100% healthy in spec; lags match τ); 210 tests pass |

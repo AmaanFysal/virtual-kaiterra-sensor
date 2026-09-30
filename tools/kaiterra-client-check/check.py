@@ -34,4 +34,4 @@ if __name__ == "__main__":
     args = sys.argv[1:]
     if not args:
         sys.exit(__doc__)
-    asyncio.run(main(args[0], args[1] if len(args) > 1 else "http://127.0.0.1:8788", args[2] if len(args) > 2 else "demo"))
+    asyncio.run(main(args[0], args[1] if len(args) > 1 else "http://127.0.0.1:8790", args[2] if len(args) > 2 else "demo"))

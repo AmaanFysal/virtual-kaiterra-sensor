@@ -2,7 +2,7 @@
 
 **Purpose:** what the tests prove, the invariants they hold, and the planned validation report.
 
-> Status: M0–M8 built (2026-09-30): 227 tests; validation report summaries in `docs/workstreams/v1-standalone-sensor/reports/`, HTML as a CI artifact.
+> Status: M0–M8 built (2026-09-30): 228 tests; validation report summaries in `docs/workstreams/v1-standalone-sensor/reports/`, HTML as a CI artifact.
 
 ## Test files
 

@@ -29,7 +29,7 @@ Commands:
                      --all   every scenario, into docs/workstreams/v1-standalone-sensor/reports
   serve            Kaiterra-compatible API over HTTP (same paths, ?key= auth and JSON as api.kaiterra.com/v1)
                      --scenario <id|path> (repeatable) or --input <true-air file> [--device file]
-                     [--port 8788] [--host 127.0.0.1] [--key K (repeatable)] [--cors]
+                     [--port 8790] [--host 127.0.0.1] [--key K (repeatable)] [--cors]
                      [--clock fixed|replay] [--speed 60] [--start RFC3339]
   fixtures:fetch   Save live API responses from Kaiterra's public test Sensedge as fixtures
                    (needs KAITERRA_API_KEY in the environment or .env; does nothing without it)

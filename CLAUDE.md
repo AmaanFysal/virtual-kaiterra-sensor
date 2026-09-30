@@ -16,7 +16,7 @@ This file is an index. Details live in `docs/`; read the relevant doc before wor
 - `pnpm vks fixtures:fetch`: replace the provisional API fixtures with live ones (needs `KAITERRA_API_KEY` in `.env`; does nothing without it)
 - `pnpm vks scenarios` / `generate --scenario <id>` / `convert --scenario <id> --format kaiterra-top`: run the generator and the virtual device from the command line (docs/06); `pnpm -s vks …` for clean piped output
 - `pnpm vks report --all`: regenerate the validation reports in `docs/workstreams/v1-standalone-sensor/reports/`. Markdown and `.stats.json` are committed (a test fails if they are stale); HTML is gitignored and a CI artifact
-- `pnpm -s vks serve --scenario <id> --key demo`: Kaiterra-compatible API on http://127.0.0.1:8788/v1 (docs/06)
+- `pnpm -s vks serve --scenario <id> --key demo`: Kaiterra-compatible API on http://127.0.0.1:8790/v1 (docs/06)
 - `pnpm vks help`: CLI usage
 
 ## Layout
